@@ -1,3 +1,10 @@
+use std;
+
+pub mod cmd;
+pub mod stdlib;
+pub mod lang;
+
 fn main() {
-    println!("Hello, world!");
+    cmd::init();
+    std::process::exit(0);
 }
