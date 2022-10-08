@@ -7,10 +7,11 @@ use crate::lang;
 use crate::tsak_lib::io::get_file;
 use crate::stdlib::nr::metric::raw;
 
-pub fn run_metric(c: &cmd::Cli, l: u8, e: u32, s: &String, a: &Vec<String>) {
+pub fn run_metric(c: &cmd::Cli, l: u8, e: u32, s: &String, args: &Vec<String>) {
     log::trace!("run_metric() reached");
     let mut engine = lang::LangEngine::init();
     engine.set_cli_scope(c);
+    engine.set_extra_scope(args);
     log::trace!("Engine established");
     let script = get_file::get_file(s.to_string());
     if script.is_empty() {

@@ -26,6 +26,21 @@ impl LangEngine<'_> {
         self.scope.push("HOSTNAME", c.hostname.clone());
         self.scope.push("INSTANCE", c.name.clone());
     }
+    pub fn set_extra_scope(&mut self, args: &Vec<String>) {
+        for arg in args {
+            let pair: Vec<_> = arg.splitn(2, "=").collect();
+            if pair.len() != 2 {
+                continue;
+            }
+            let key = pair[0];
+            let value = pair[1];
+            match self.engine.eval_expression_with_scope::<f64>(&mut self.scope, value) {
+                Ok(res) => self.scope.push(key, res),
+                Err(_)  => self.scope.push(key, format!("{}", &value)),
+            };
+            log::debug!("Detected extra scope var {}={}", &key, &value);
+        }
+    }
     pub fn eval_int_with_scope(&mut self, c: &String) -> i64 {
         return self.engine.eval_expression_with_scope::<i64>(&mut self.scope, c).unwrap()
     }

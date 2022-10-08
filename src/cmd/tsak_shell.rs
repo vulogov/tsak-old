@@ -5,17 +5,12 @@ use crate::stdlib::banner;
 use crate::cmd;
 use crate::lang;
 
-pub fn run_shell(c: &cmd::Cli, a: &Vec<String>)  {
+pub fn run_shell(c: &cmd::Cli, args: &Vec<String>)  {
     log::trace!("run_shell() reached");
     println!("{}", banner::bund_banner());
     let mut engine = lang::LangEngine::init();
     engine.set_cli_scope(c);
-    for code in a {
-        match engine.run(code.to_string()) {
-            Ok(_) => log::trace!("Script finished succesfully"),
-            Err(err) => log::error!("Error running script: {}", err),
-        }
-    }
+    engine.set_extra_scope(args);
     let mut line = Editor::<()>::new().unwrap();
     loop {
         let readline = line.readline("[TSAK > ");
