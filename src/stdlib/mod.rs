@@ -6,6 +6,8 @@ pub mod banner;
 pub mod uuid;
 pub mod env;
 pub mod string;
+pub mod nr;
+pub mod timestamp;
 
 
 #[macro_export]
@@ -23,4 +25,5 @@ pub fn initlib(engine: &mut Engine) {
     uuid::init(engine);
     env::init(engine);
     string::init(engine);
+    timestamp::init(engine);
 }

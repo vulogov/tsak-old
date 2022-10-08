@@ -1,0 +1,10 @@
+let event = #{
+  answer: 42,
+  timestamp: timestamp::timestampMS(),
+  eventType: "MyEvents",
+  attributes: #{
+    instanceId: INSTANCE,
+    "host.name": HOSTNAME,
+  },
+};
+event
