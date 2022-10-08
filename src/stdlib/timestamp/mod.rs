@@ -7,7 +7,7 @@ use rhai::plugin::*;
 pub mod timestamp_module {
 
 
-    pub fn timestampMS() -> u64 {
+    pub fn timestamp_ms() -> u64 {
     	SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_millis() as u64
     }
 }

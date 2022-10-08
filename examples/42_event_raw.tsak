@@ -1,10 +1,10 @@
 let event = #{
   answer: 42,
-  timestamp: timestamp::timestampMS(),
+  timestamp: timestamp::timestamp_ms(),
   eventType: "MyEvents",
-  attributes: #{
-    instanceId: INSTANCE,
-    "host.name": HOSTNAME,
+  instanceId: INSTANCE,
+  "host.name": HOSTNAME,
+  attributes: #{    
   },
 };
 event

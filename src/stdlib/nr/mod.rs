@@ -5,6 +5,8 @@ use flate2::Compression;
 
 pub mod graphql;
 pub mod event;
+pub mod metric;
+
 
 pub fn compress_payload(payload: &String) -> io::Result<Vec<u8>> {
     let mut result = Vec::new();

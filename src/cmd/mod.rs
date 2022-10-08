@@ -12,6 +12,8 @@ mod tsak_shell;
 mod tsak_run;
 mod tsak_version;
 mod tsak_event;
+mod tsak_metric;
+
 
 pub fn init() {
     let cli = Cli::parse();
@@ -31,6 +33,9 @@ pub fn init() {
         }
         Commands::Event(event) => {
             tsak_event::run_event(&cli, event.l, event.every, &event.script, &event.args);
+        }
+        Commands::Metric(metric) => {
+            tsak_metric::run_metric(&cli, metric.l, metric.every, &metric.script, &metric.args);
         }
     }
 }
@@ -84,6 +89,7 @@ enum Commands {
     Run(Run),
     Version(Version),
     Event(Event),
+    Metric(Metric),
 }
 
 #[derive(Args, Clone, Debug)]
@@ -109,13 +115,29 @@ struct Version {
 #[derive(Args, Clone, Debug)]
 #[clap(about="Compute and send event")]
 struct Event {
-    #[clap(short, long, action = clap::ArgAction::Count, help="Run even computation in loop")]
+    #[clap(short, long, action = clap::ArgAction::Count, help="Run event computation in loop")]
     l:      u8,
 
     #[clap(short, long, default_value_t=15, help="Number of seconds between event calulations")]
     every:  u32,
 
     #[clap(help="Path to event computation script", short, long, default_value_t = String::from("-"))]
+    pub script: String,
+
+    #[clap(last = true)]
+    args: Vec<String>,
+}
+
+#[derive(Args, Clone, Debug)]
+#[clap(about="Compute and send metric")]
+struct Metric {
+    #[clap(short, long, action = clap::ArgAction::Count, help="Run metric computation in loop")]
+    l:      u8,
+
+    #[clap(short, long, default_value_t=15, help="Number of seconds between metric calulations")]
+    every:  u32,
+
+    #[clap(help="Path to metric computation script", short, long, default_value_t = String::from("-"))]
     pub script: String,
 
     #[clap(last = true)]
