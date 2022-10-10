@@ -9,7 +9,7 @@ use crate::stdlib::nr::event::raw;
 
 pub fn run_event(c: &cmd::Cli, l: u8, e: u32, s: &String, args: &Vec<String>) {
     log::trace!("run_event() reached");
-    let mut engine = lang::LangEngine::init();
+    let mut engine = lang::LangEngine::init(c);
     engine.set_cli_scope(c);
     engine.set_extra_scope(args);
     log::trace!("Engine established");
@@ -24,10 +24,12 @@ pub fn run_event(c: &cmd::Cli, l: u8, e: u32, s: &String, args: &Vec<String>) {
         calculate_event(c, &mut engine, &script);
     } else {
         loop {
+            let t = howlong::HighResolutionTimer::new();
             if ! calculate_event(c, &mut engine, &script) {
                 log::error!("Error during event generation");
                 break;
             }
+            log::debug!("{:?} takes to calculate and send event", t.elapsed());
             sleep(Duration::from_secs(e.into()));
         }
     }

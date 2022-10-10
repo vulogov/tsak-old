@@ -4,7 +4,7 @@ use crate::lang;
 
 pub fn run_run(c: &cmd::Cli, args: &Vec<String>) {
     log::trace!("run_run() reached");
-    let mut engine = lang::LangEngine::init();
+    let mut engine = lang::LangEngine::init(c);
     engine.set_cli_scope(c);
     for code in args {
         match engine.run(code.to_string()) {

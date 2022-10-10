@@ -8,7 +8,7 @@ use crate::lang;
 pub fn run_shell(c: &cmd::Cli, args: &Vec<String>)  {
     log::trace!("run_shell() reached");
     println!("{}", banner::bund_banner());
-    let mut engine = lang::LangEngine::init();
+    let mut engine = lang::LangEngine::init(c);
     engine.set_cli_scope(c);
     engine.set_extra_scope(args);
     let mut line = Editor::<()>::new().unwrap();

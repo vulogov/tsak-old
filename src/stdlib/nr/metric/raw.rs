@@ -11,9 +11,9 @@ pub fn send_metric_payload(url: &String, key: &String, payload: &String) -> bool
         .send_bytes(data.as_bytes()).unwrap();
     if resp.status() == 202 {
         log::debug!("Request was succesful");
-        std::process::exit(0);
+        return true;
     } else {
         log::error!("Request failed");
-        std::process::exit(1);
+        return false;
     }
 }

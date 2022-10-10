@@ -7,6 +7,7 @@ pub mod uuid;
 pub mod env;
 pub mod string;
 pub mod nr;
+pub mod nrql;
 pub mod timestamp;
 
 
@@ -26,4 +27,5 @@ pub fn initlib(engine: &mut Engine) {
     env::init(engine);
     string::init(engine);
     timestamp::init(engine);
+    nrql::init(engine);
 }

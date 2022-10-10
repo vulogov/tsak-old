@@ -9,7 +9,7 @@ use crate::stdlib::nr::metric::raw;
 
 pub fn run_metric(c: &cmd::Cli, l: u8, e: u32, s: &String, args: &Vec<String>) {
     log::trace!("run_metric() reached");
-    let mut engine = lang::LangEngine::init();
+    let mut engine = lang::LangEngine::init(c);
     engine.set_cli_scope(c);
     engine.set_extra_scope(args);
     log::trace!("Engine established");
@@ -24,13 +24,16 @@ pub fn run_metric(c: &cmd::Cli, l: u8, e: u32, s: &String, args: &Vec<String>) {
         calculate_metric(c, &mut engine, &script);
     } else {
         loop {
+            let t = howlong::HighResolutionTimer::new();
             if ! calculate_metric(c, &mut engine, &script) {
                 log::error!("Error during metric generation");
                 break;
             }
+            log::debug!("{:?} takes to calculate and send metric", t.elapsed());
             sleep(Duration::from_secs(e.into()));
         }
     }
+    log::debug!("Submission is finished");
 }
 
 fn calculate_metric(c: &cmd::Cli, e: &mut lang::LangEngine, s: &String) -> bool {

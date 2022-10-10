@@ -47,7 +47,7 @@ pub fn init() {
 #[clap(about = "The TSAK tool", long_about = None)]
 pub struct Cli {
     #[clap(short, long, action = clap::ArgAction::Count, help="Increase verbosity")]
-    debug: u8,
+    pub debug: u8,
 
     #[clap(long, default_value_t = String::from("insights-collector.newrelic.com"), help="Hostname for Event API")]
     pub nr_event: String,
