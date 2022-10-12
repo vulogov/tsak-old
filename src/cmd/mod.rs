@@ -13,6 +13,7 @@ mod tsak_run;
 mod tsak_version;
 mod tsak_event;
 mod tsak_metric;
+mod tsak_log;
 
 
 pub fn init() {
@@ -28,7 +29,7 @@ pub fn init() {
             log::debug!("Scripts execution requested");
             tsak_run::run_run(&cli, &run.args);
         }
-        Commands::Version(_version) => {
+        Commands::Version(_) => {
             tsak_version::run_version(&cli);
         }
         Commands::Event(event) => {
@@ -36,6 +37,9 @@ pub fn init() {
         }
         Commands::Metric(metric) => {
             tsak_metric::run_metric(&cli, metric.l, metric.every, &metric.script, &metric.args);
+        }
+        Commands::Log(nlog) => {
+            tsak_log::run_log(&cli, nlog.l, nlog.every, &nlog.script, &nlog.args);
         }
     }
 }
@@ -90,6 +94,7 @@ enum Commands {
     Version(Version),
     Event(Event),
     Metric(Metric),
+    Log(Log),
 }
 
 #[derive(Args, Clone, Debug)]
@@ -138,6 +143,22 @@ struct Metric {
     every:  u32,
 
     #[clap(help="Path to metric computation script", short, long, default_value_t = String::from("-"))]
+    pub script: String,
+
+    #[clap(last = true)]
+    args: Vec<String>,
+}
+
+#[derive(Args, Clone, Debug)]
+#[clap(about="Compute and send log")]
+struct Log {
+    #[clap(short, long, action = clap::ArgAction::Count, help="Run log computation in loop")]
+    l:      u8,
+
+    #[clap(short, long, default_value_t=15, help="Number of seconds between log calulations")]
+    every:  u32,
+
+    #[clap(help="Path to log computation script", short, long, default_value_t = String::from("-"))]
     pub script: String,
 
     #[clap(last = true)]
