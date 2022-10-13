@@ -1,7 +1,7 @@
 extern crate log;
 use rhai::{Engine};
 use rhai::plugin::*;
-use fsio::{directory, file, path};
+use fsio::{file};
 use crate::tsak_lib::io::get_file;
 
 #[export_module]
