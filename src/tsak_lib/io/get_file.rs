@@ -42,6 +42,7 @@ fn get_file_from_url(some_url: String) -> String {
     }
 
     let mut easy = Easy2::new(Collector(Vec::new()));
+    let _ = easy.useragent("TSAK");
     easy.get(true).unwrap();
     easy.url(&some_url).unwrap();
     match easy.perform() {

@@ -12,6 +12,7 @@ pub mod timestamp;
 pub mod system;
 pub mod tsak_log;
 pub mod input;
+pub mod json;
 
 
 #[macro_export]
@@ -35,4 +36,5 @@ pub fn initlib(engine: &mut Engine) {
     system::init(engine);
     tsak_log::init(engine);
     input::init(engine);
+    json::init(engine);
 }
