@@ -9,6 +9,8 @@ pub mod string;
 pub mod nr;
 pub mod nrql;
 pub mod timestamp;
+pub mod system;
+pub mod tsak_log;
 
 
 #[macro_export]
@@ -28,4 +30,7 @@ pub fn initlib(engine: &mut Engine) {
     string::init(engine);
     timestamp::init(engine);
     nrql::init(engine);
+    nr::init(engine);
+    system::init(engine);
+    tsak_log::init(engine);
 }

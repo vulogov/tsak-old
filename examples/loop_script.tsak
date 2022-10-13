@@ -1,0 +1,6 @@
+let n = 0;
+loop {
+  system::sleep(1);
+  log::info("n="+n);
+  n += 1;
+}

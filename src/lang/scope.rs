@@ -61,4 +61,24 @@ impl LangEngine<'_> {
             }
         }
     }
+    pub fn run_with_scope(&mut self, c: &String) -> bool {
+        match self.engine.compile_with_scope(&mut self.scope, c) {
+            Ok(ast) => {
+                match self.engine.run_ast_with_scope(&mut self.scope, &ast) {
+                    Ok(ret) => {
+                        log::debug!("Script returned {:?}", ret);
+                        return true;
+                    }
+                    Err(err)  => {
+                        log::error!("Script evaluating error: {}", err);
+                        return false;
+                    }
+                }
+            }
+            Err(err) => {
+                log::error!("Script parsing error: {}", err);
+                return true;
+            }
+        }
+    }
 }

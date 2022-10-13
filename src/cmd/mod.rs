@@ -14,6 +14,7 @@ mod tsak_version;
 mod tsak_event;
 mod tsak_metric;
 mod tsak_log;
+mod tsak_exec;
 
 
 pub fn init() {
@@ -40,6 +41,9 @@ pub fn init() {
         }
         Commands::Log(nlog) => {
             tsak_log::run_log(&cli, nlog.l, nlog.every, &nlog.script, &nlog.args);
+        }
+        Commands::Exec(exec) => {
+            tsak_exec::run_exec(&cli, &exec.script, &exec.args);
         }
     }
 }
@@ -95,6 +99,7 @@ enum Commands {
     Event(Event),
     Metric(Metric),
     Log(Log),
+    Exec(Exec),
 }
 
 #[derive(Args, Clone, Debug)]
@@ -159,6 +164,16 @@ struct Log {
     every:  u32,
 
     #[clap(help="Path to log computation script", short, long, default_value_t = String::from("-"))]
+    pub script: String,
+
+    #[clap(last = true)]
+    args: Vec<String>,
+}
+
+#[derive(Args, Clone, Debug)]
+#[clap(about="Execute TSAK script")]
+struct Exec {
+    #[clap(help="Path to TSAK script", short, long, default_value_t = String::from("-"))]
     pub script: String,
 
     #[clap(last = true)]

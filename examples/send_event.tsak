@@ -1,0 +1,10 @@
+let event = #{
+  answer: 42,
+  timestamp: timestamp::timestamp_ms(),
+  eventType: "MyEvents",
+  instanceId: INSTANCE,
+  "host.name": HOSTNAME,
+  attributes: #{
+  },
+};
+newrelic::event(NR_EVENT, NR_ACCOUNT, NR_INSERT_KEY, event);

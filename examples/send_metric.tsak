@@ -1,0 +1,11 @@
+let metric = #{
+  value: 42,
+  name: "answer",
+  type: "gauge",
+  timestamp: timestamp::timestamp_ms(),
+  attributes: #{
+    instanceId: INSTANCE,
+    "host.name": HOSTNAME,
+  },
+};
+newrelic::metric(NR_METRIC, NR_INSERT_KEY, metric);

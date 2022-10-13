@@ -1,0 +1,11 @@
+let log = #{
+  message: "The Answer is 42",
+  timestamp: timestamp::timestamp_ms(),
+  attributes: #{
+    instanceId: INSTANCE,
+    "host.name": HOSTNAME,
+    logtype: "customlog",
+    service: "TSAK service",
+  },
+};
+newrelic::log(NR_LOG, NR_INSERT_KEY, log);

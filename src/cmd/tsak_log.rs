@@ -5,7 +5,7 @@ use rhai::{format_map_as_json};
 use crate::cmd;
 use crate::lang;
 use crate::tsak_lib::io::get_file;
-use crate::stdlib::nr::log::raw;
+use crate::stdlib::nr::nrlog::raw;
 
 pub fn run_log(c: &cmd::Cli, l: u8, e: u32, s: &String, args: &Vec<String>) {
     log::trace!("run_log() reached");
