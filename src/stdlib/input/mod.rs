@@ -4,6 +4,8 @@ use rhai::plugin::*;
 use fsio::{file};
 use crate::tsak_lib::io::get_file;
 
+pub mod command;
+
 #[export_module]
 pub mod input_module {
     pub fn stdin() -> String {
@@ -20,6 +22,9 @@ pub mod input_module {
                 return "".to_string();
             }
         }
+    }
+    pub fn command(c: &str, a: String) -> String {
+        command::os_command(c, &a)
     }
 }
 
