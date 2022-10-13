@@ -8,6 +8,7 @@ clap = { version = "3.2.16", features = ["derive"] }
 curl = "0.4.44"
 env_logger = "0.9.0"
 flate2 = "1.0.24"
+fsio = "0.4.0"
 hostname = "^0.3"
 howlong = "0.1.7"
 lexical-core = "0.8.5"
