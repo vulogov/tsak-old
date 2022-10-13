@@ -11,6 +11,7 @@ pub mod nrql;
 pub mod timestamp;
 pub mod system;
 pub mod tsak_log;
+pub mod input;
 
 
 #[macro_export]
@@ -33,4 +34,5 @@ pub fn initlib(engine: &mut Engine) {
     nr::init(engine);
     system::init(engine);
     tsak_log::init(engine);
+    input::init(engine);
 }
