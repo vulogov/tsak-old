@@ -12,12 +12,21 @@ pub fn send_event_payload(url: &String, account: &String, key: &String, payload:
         .set("Content-Encoding", "gzip")
         .set("Api-Key", key)
         .set("Content-Type", "application/json")
-        .send_bytes(zp).unwrap();
-    if resp.status() == 200 {
-        log::debug!("Request was succesful");
-        return true;
-    } else {
-        log::error!("Request failed");
-        return false;
+        .send_bytes(zp);
+
+    match resp {
+        Ok(rsp) => {
+            if rsp.status() == 200 {
+                log::debug!("Request was succesful");
+                return true;
+            } else {
+                log::error!("Request failed");
+                return false;
+            }
+        }
+        Err(err) => {
+            log::error!("Request failed: {:?}", err);
+            return false;
+        }
     }
 }
