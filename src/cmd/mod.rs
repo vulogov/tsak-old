@@ -28,7 +28,7 @@ pub fn init() {
         }
         Commands::Run(run) => {
             log::debug!("Scripts execution requested");
-            tsak_run::run_run(&cli, &run.args);
+            tsak_run::run_run(&cli, &run.expression, &run.args);
         }
         Commands::Version(_) => {
             tsak_version::run_version(&cli);
@@ -112,6 +112,9 @@ struct Shell {
 #[derive(Args, Clone, Debug)]
 #[clap(about="Run scripts")]
 struct Run {
+    #[clap(help="Expression to evaluate", short, long, default_value_t = String::from("\"Hello world!\""))]
+    pub expression: String,
+
     #[clap(last = true)]
     args: Vec<String>,
 }

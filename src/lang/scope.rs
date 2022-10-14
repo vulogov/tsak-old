@@ -1,6 +1,6 @@
 extern crate log;
 use std::time::{SystemTime, UNIX_EPOCH};
-use rhai::{Map};
+use rhai::{Map, Dynamic};
 
 use crate::lang::{LangEngine};
 use crate::cmd::{Cli};
@@ -78,6 +78,26 @@ impl LangEngine<'_> {
             Err(err) => {
                 log::error!("Script parsing error: {}", err);
                 return true;
+            }
+        }
+    }
+}
+
+impl LangEngine<'_> {
+    pub fn eval_with_scope(&mut self, c: &String) -> Option<Dynamic> {
+        match self.engine.compile_with_scope(&mut self.scope, c) {
+            Ok(ast) => {
+                match self.engine.eval_ast_with_scope::<Dynamic>(&mut self.scope, &ast) {
+                    Ok(ret) => return Some(ret),
+                    Err(err)  => {
+                        log::error!("Script evaluating error: {}", err);
+                        return None;
+                    }
+                }
+            }
+            Err(err) => {
+                log::error!("Script parsing error: {}", err);
+                return None;
             }
         }
     }

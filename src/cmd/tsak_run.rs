@@ -2,14 +2,13 @@ extern crate log;
 use crate::cmd;
 use crate::lang;
 
-pub fn run_run(c: &cmd::Cli, args: &Vec<String>) {
+pub fn run_run(c: &cmd::Cli, e: &String, args: &Vec<String>) {
     log::trace!("run_run() reached");
     let mut engine = lang::LangEngine::init(c);
     engine.set_cli_scope(c);
-    for code in args {
-        match engine.run(code.to_string()) {
-            Ok(_) => log::trace!("Script finished succesfully"),
-            Err(err) => log::error!("Error running script: {}", err),
-        }
+    engine.set_extra_scope(args);
+    match engine.eval_with_scope(&e.to_string()) {
+        Some(res) => log::trace!("Script finished succesfully: {:?}", res),
+        None => log::trace!("Script return None"),
     }
 }

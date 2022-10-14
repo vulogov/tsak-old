@@ -1,15 +1,22 @@
 extern crate log;
-use rhai::{Engine};
+use rhai::{Engine, Map};
 use rhai::plugin::*;
-
+use serde_json::{from_str};
 use crate::stdlib::nr::graphql::nrql::{nrql_query};
 
 #[export_module]
 pub mod nrql_module {
 
 
-    pub fn query(url: String, a: String, key: String, q: String) {
-        nrql_query(url, a, key, q)
+    pub fn query(url: String, a: String, key: String, q: String) -> Map {
+        let data = nrql_query(url, a, key, q);
+        match from_str(&data) {
+            Ok(res) => res,
+            Err(err) => {
+                log::error!("Error converting from JSON: {}", err);
+                return Map::new();
+            }
+        }
     }
 }
 

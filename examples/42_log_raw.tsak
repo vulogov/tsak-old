@@ -1,5 +1,5 @@
 let log = #{
-  message: "The Answer is 42",
+  message: "The Answer is always 42",
   timestamp: timestamp::timestamp_ms(),
   attributes: #{
     instanceId: INSTANCE,

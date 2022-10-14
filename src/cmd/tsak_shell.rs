@@ -12,13 +12,19 @@ pub fn run_shell(c: &cmd::Cli, args: &Vec<String>)  {
     engine.set_cli_scope(c);
     engine.set_extra_scope(args);
     let mut line = Editor::<()>::new().unwrap();
+    if line.load_history(".tsak_history").is_err() {
+        log::warn!("No previous history discovered");
+    }
     loop {
         let readline = line.readline("[TSAK > ");
         match readline {
-            Ok(line) => {
-                match engine.run(line.to_string()) {
-                    Ok(_) => log::trace!("Script finished succesfully"),
-                    Err(err) => log::error!("Error running script: {}", err),
+            Ok(l) => {
+                match engine.eval_with_scope(&l.to_string()) {
+                    Some(res) => {
+                        line.add_history_entry(l.as_str());
+                        log::info!("Return={:?}", res)
+                    },
+                    _ => log::debug!("Script return None"),
                 }
             },
             Err(ReadlineError::Interrupted) => {
@@ -35,5 +41,6 @@ pub fn run_shell(c: &cmd::Cli, args: &Vec<String>)  {
             }
         }
     }
+    let _ = line.save_history(".tsak_history");
     println!("{}", banner::banner(&"Zay Gezunt".to_string()));
 }
