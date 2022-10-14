@@ -1,0 +1,2 @@
+let res = nrql::query(NR_API, NR_ACCOUNT, NR_API_KEY, "SELECT * FROM MyEvents");
+print(res)
