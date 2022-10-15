@@ -1,0 +1,4 @@
+let event = Event();
+event["instanceId"] = INSTANCE;
+event["answer"] = 42;
+event.raw()

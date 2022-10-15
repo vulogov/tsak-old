@@ -44,7 +44,7 @@ fn calculate_log(c: &cmd::Cli, e: &mut lang::LangEngine, s: &String) -> bool {
             log::debug!("Calculation returns={:?}", &metric);
             let payload = format_map_as_json(&metric);
             log::debug!("JSON payload={}", &payload);
-            raw::send_log_payload(&c.nr_log, &c.nr_insert_key, &format!("[{}]",payload));
+            raw::send_log_payload(&c.nr_log, &c.nr_insert_key, &format!("{}",payload));
         }
         _ => {
             log::error!("Calculation script doesn't return suitable result");

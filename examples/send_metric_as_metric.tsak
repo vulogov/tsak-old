@@ -1,0 +1,3 @@
+let metric = Metric("answer", 42);
+metric["instanceId"] = INSTANCE;
+metric.send(NR_METRIC, NR_INSERT_KEY)

@@ -1,0 +1,6 @@
+let res = nrql::query(NR_API, NR_ACCOUNT, NR_API_KEY, "SELECT * FROM Log");
+if res?.data?.actor?.account?.nrql?.results != () {
+  for i in res?.data?.actor?.account?.nrql?.results {
+    print(i);
+  }
+}

@@ -31,7 +31,7 @@ pub mod nr_module {
         return res;
     }
     pub fn log(url: &str, key: &str, nr_log: Map) -> bool {
-        let payload = format!("[{}]", format_map_as_json(&nr_log));
+        let payload = format!("{}", format_map_as_json(&nr_log));
         log::debug!("Payload: {}", &payload);
         let t = howlong::HighResolutionTimer::new();
         let res = nrlog::raw::send_log_payload(&url.to_string(), &key.to_string(), &payload);
@@ -51,4 +51,6 @@ pub fn init(engine: &mut Engine) {
     log::trace!("Running STDLIB::nr init");
     let module = exported_module!(nr_module);
     engine.register_static_module("newrelic", module.into());
+    event::event_type::init(engine);
+    metric::metric_type::init(engine);
 }
