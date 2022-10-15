@@ -53,4 +53,5 @@ pub fn init(engine: &mut Engine) {
     engine.register_static_module("newrelic", module.into());
     event::event_type::init(engine);
     metric::metric_type::init(engine);
+    nrlog::log_type::init(engine);
 }
