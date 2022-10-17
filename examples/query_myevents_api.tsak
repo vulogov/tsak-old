@@ -1,0 +1,3 @@
+let nrql = NRQL(NR_API, NR_ACCOUNT, NR_API_KEY);
+let res = nrql.query_raw("SELECT * FROM MyEvents");
+print(res)
