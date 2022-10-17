@@ -55,4 +55,5 @@ pub fn init(engine: &mut Engine) {
     metric::metric_type::init(engine);
     nrlog::log_type::init(engine);
     graphql::nrql_type::init(engine);
+    graphql::result_type::init(engine);
 }

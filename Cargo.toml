@@ -24,6 +24,9 @@ serde_json = "1.0.86"
 os_pipe = "1.1.1"
 smartstring = "1.0.1"
 sysinfo = "0.26.4"
+polars-core = "0.24.3"
+polars-io = "0.24.3"
+jsonpath-rust = "0.1.6"
 
 [dependencies.rhai]
 version = "1.10.1"
@@ -32,6 +35,23 @@ features = [
   "serde",
   "decimal",
   "internals",
+]
+
+[dependencies.polars]
+version = "0.23.2"
+features = [
+  "lazy",
+  "csv-file",
+  "strings",
+  "temporal",
+  "dtype-duration",
+  "dtype-categorical",
+  "concat_str",
+  "list",
+  "list_eval",
+  "rank",
+  "lazy_regex",
+  "json",
 ]
 
 [dependencies.uuid]
