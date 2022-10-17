@@ -1,0 +1,2 @@
+let res = Text(input::file("/etc/passwd"));
+print(res.lines("^root.*$"))
