@@ -27,6 +27,8 @@ sysinfo = "0.26.4"
 polars-core = "0.24.3"
 polars-io = "0.24.3"
 jsonpath-rust = "0.1.6"
+voca_rs = "1.15.0"
+regex = "1.6.0"
 
 [dependencies.rhai]
 version = "1.10.1"

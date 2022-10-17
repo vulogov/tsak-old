@@ -15,7 +15,9 @@ pub fn nrql_query(url: String, a: String, key: String, q: String) -> String {
         Ok(rsp) => {
             if rsp.status() == 200 {
                 log::debug!("Request was succesful");
-                rsp.into_string().unwrap()
+                let out = rsp.into_string().unwrap();
+                log::debug!("Responce {}, len={}", &out, &out.len());
+                out
             } else {
                 log::error!("Request failed");
                 "{}".to_string()

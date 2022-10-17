@@ -28,6 +28,10 @@ impl NRResult {
                     jsons += &r.to_string();
                     jsons += &"\n".to_string();
                 }
+                if jsons.is_empty() {
+                    log::info!("There is no data to fill Result()");
+                    return;
+                }
                 let file = Cursor::new(jsons);
                 match JsonReader::new(file)
                     .with_json_format(JsonFormat::JsonLines)
@@ -48,5 +52,5 @@ pub fn init(engine: &mut Engine) {
     log::trace!("Running STDLIB::Result type init");
     engine.register_type::<NRResult>()
           .register_fn("Result", NRResult::init)
-          .register_fn("to_string", |x: &mut NRResult| format!("{:?}", x) );
+          .register_fn("to_string", |x: &mut NRResult| format!("{:?}", x.df) );
 }
