@@ -10,8 +10,8 @@ pub mod scope;
 pub type RhaiResult<T> = std::result::Result<T, Box<EvalAltResult>>;
 
 pub struct LangEngine<'a> {
-    engine:    Engine,
-    scope:     Scope<'a>,
+    pub engine:    Engine,
+    pub scope:     Scope<'a>,
     name:      String,
     pub is_debug:   bool,
     pub timer:      HighResolutionTimer,
@@ -36,8 +36,9 @@ impl LangEngine<'_> {
         }
         e.engine.register_global_module(RandomPackage::new().as_shared_module());
         e.engine.register_global_module(SciPackage::new().as_shared_module());
-        stdlib::initlib(&mut e.engine);
         e.set_default_scope();
+        e.set_cli_scope(&c);
+        stdlib::initlib(&mut e);
         e.elapsed("Init finished");
         e
     }

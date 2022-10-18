@@ -5,6 +5,7 @@ use fsio::{file};
 use crate::tsak_lib::io::get_file;
 
 pub mod command;
+pub mod watch;
 
 #[export_module]
 pub mod input_module {
@@ -30,7 +31,7 @@ pub mod input_module {
 
 pub fn init(engine: &mut Engine) {
     log::trace!("Running STDLIB::input init");
-    let module = exported_module!(input_module);
-
+    let mut module = exported_module!(input_module);
+    module.set_native_fn("watch", watch::file_watch);
     engine.register_static_module("input", module.into());
 }

@@ -1,5 +1,5 @@
 extern crate log;
-use rhai::{Engine};
+use crate::lang::{LangEngine};
 pub mod genid;
 pub mod banner;
 
@@ -25,16 +25,16 @@ macro_rules! err {
 	)
 }
 
-pub fn initlib(engine: &mut Engine) {
+pub fn initlib(engine: &mut LangEngine) {
     log::trace!("Running STDLIB init");
-    uuid::init(engine);
-    env::init(engine);
-    string::init(engine);
-    timestamp::init(engine);
-    nrql::init(engine);
-    nr::init(engine);
-    system::init(engine);
-    tsak_log::init(engine);
-    input::init(engine);
-    json::init(engine);
+    uuid::init(&mut engine.engine);
+    env::init(&mut engine.engine);
+    string::init(&mut engine.engine);
+    timestamp::init(&mut engine.engine);
+    nrql::init(&mut engine.engine);
+    nr::init(&mut engine.engine, &mut engine.scope);
+    system::init(&mut engine.engine);
+    tsak_log::init(&mut engine.engine);
+    input::init(&mut engine.engine);
+    json::init(&mut engine.engine);
 }

@@ -10,7 +10,6 @@ use crate::stdlib::nr::nrlog::raw;
 pub fn run_log(c: &cmd::Cli, l: u8, e: u32, s: &String, args: &Vec<String>) {
     log::trace!("run_log() reached");
     let mut engine = lang::LangEngine::init(c);
-    engine.set_cli_scope(c);
     engine.set_extra_scope(args);
     log::trace!("Engine established");
     let script = get_file::get_file(s.to_string());

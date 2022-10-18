@@ -1,0 +1,6 @@
+fn sendlog(msg) {
+  let l = Log(msg);
+  l.send(newrelic::NR_LOG, newrelic::NR_INSERT_KEY);
+}
+
+input::watch("logfile", sendlog);

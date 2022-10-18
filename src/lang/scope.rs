@@ -25,6 +25,7 @@ impl LangEngine<'_> {
         // And environment
         self.scope.push("HOSTNAME", c.hostname.clone());
         self.scope.push("INSTANCE", c.name.clone());
+
     }
     pub fn set_extra_scope(&mut self, args: &Vec<String>) {
         for arg in args {

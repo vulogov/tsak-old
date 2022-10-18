@@ -4,7 +4,7 @@ use std::io;
 use std::io::{Read};
 use flate2::read::GzEncoder;
 use flate2::Compression;
-use rhai::{Engine, Map, format_map_as_json};
+use rhai::{Engine, Map, Scope, format_map_as_json};
 use rhai::plugin::*;
 
 pub mod graphql;
@@ -47,9 +47,19 @@ pub fn compress_payload(payload: &String) -> io::Result<Vec<u8>> {
     Ok(result)
 }
 
-pub fn init(engine: &mut Engine) {
+pub fn init(engine: &mut Engine, scope: &mut Scope) {
     log::trace!("Running STDLIB::nr init");
-    let module = exported_module!(nr_module);
+    let mut module = exported_module!(nr_module);
+    module.set_var("NR_EVENT", scope.get_value::<String>("NR_EVENT").unwrap());
+    module.set_var("NR_METRIC", scope.get_value::<String>("NR_METRIC").unwrap());
+    module.set_var("NR_LOG", scope.get_value::<String>("NR_LOG").unwrap());
+    module.set_var("NR_TRACE", scope.get_value::<String>("NR_TRACE").unwrap());
+    module.set_var("NR_API", scope.get_value::<String>("NR_API").unwrap());
+    module.set_var("NR_ACCOUNT", scope.get_value::<String>("NR_ACCOUNT").unwrap());
+    module.set_var("NR_API_KEY", scope.get_value::<String>("NR_API_KEY").unwrap());
+    module.set_var("NR_INSERT_KEY", scope.get_value::<String>("NR_INSERT_KEY").unwrap());
+    module.set_var("HOSTNAME", scope.get_value::<String>("HOSTNAME").unwrap());
+    module.set_var("INSTANCE", scope.get_value::<String>("INSTANCE").unwrap());
     engine.register_static_module("newrelic", module.into());
     event::event_type::init(engine);
     metric::metric_type::init(engine);
