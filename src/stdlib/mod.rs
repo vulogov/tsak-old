@@ -13,7 +13,7 @@ pub mod system;
 pub mod tsak_log;
 pub mod input;
 pub mod json;
-
+pub mod grok;
 
 #[macro_export]
 macro_rules! err {
@@ -37,4 +37,5 @@ pub fn initlib(engine: &mut LangEngine) {
     tsak_log::init(&mut engine.engine);
     input::init(&mut engine.engine);
     json::init(&mut engine.engine);
+    grok::init(&mut engine.engine);
 }
