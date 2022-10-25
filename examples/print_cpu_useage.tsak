@@ -1,0 +1,3 @@
+metrics::refresh();
+let cpu_use = mean(metrics::cpu::usage());
+print(`Cpu usage ${cpu_use}`);
