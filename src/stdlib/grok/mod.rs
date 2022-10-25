@@ -86,7 +86,7 @@ pub fn init(engine: &mut Engine) {
     engine.register_type::<NRGrok>()
           .register_fn("Grok", NRGrok::init)
           .register_fn("is_match", NRGrok::is_match)
-          .register_fn("match", NRGrok::do_match)
+          .register_fn("do_match", NRGrok::do_match)
           .register_indexer_set(NRGrok::set_field)
           .register_indexer_get(NRGrok::get_field)
           .register_fn("to_string", |x: &mut NRGrok| format!("{:?}", x.g) );

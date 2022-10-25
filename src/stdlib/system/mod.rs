@@ -4,6 +4,8 @@ use std::{thread, time};
 use rhai::{Engine};
 use rhai::plugin::*;
 
+pub mod system_metrics;
+
 #[export_module]
 pub mod system_module {
     pub fn sleep(s: i64) {
@@ -23,4 +25,5 @@ pub fn init(engine: &mut Engine) {
     log::trace!("Running STDLIB::system init");
     let module = exported_module!(system_module);
     engine.register_static_module("system", module.into());
+    system_metrics::init(engine);
 }

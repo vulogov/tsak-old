@@ -31,6 +31,7 @@ voca_rs = "1.15.0"
 regex = "1.6.0"
 grok = "2.0.0"
 logwatcher = "0.1.1"
+lazy_static = "1.4.0"
 
 [dependencies.rhai]
 version = "1.10.1"

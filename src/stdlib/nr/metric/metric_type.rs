@@ -6,7 +6,7 @@ use crate::stdlib::nr::nr_module::{metric};
 
 
 #[derive(Debug, Clone)]
-struct Metric {
+pub struct Metric {
     met: Map,
 }
 
@@ -16,7 +16,7 @@ impl Metric {
             met: Map::new(),
         }
     }
-    fn init(n: String, v: Dynamic) -> Metric {
+    pub fn init(n: String, v: Dynamic) -> Metric {
         let mut sys = System::new_all();
         sys.refresh_all();
         let mut res = Metric::new();
