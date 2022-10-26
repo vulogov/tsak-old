@@ -6,7 +6,7 @@ use crate::stdlib::nr::nr_module::{event};
 
 
 #[derive(Debug, Clone)]
-struct Event {
+pub struct Event {
     evt: Map,
 }
 
@@ -16,7 +16,7 @@ impl Event {
             evt: Map::new(),
         }
     }
-    fn init() -> Event {
+    pub fn init() -> Event {
         let mut sys = System::new_all();
         sys.refresh_all();
         let mut res = Event::new();
@@ -32,7 +32,7 @@ impl Event {
         }
         return Dynamic::default();
     }
-    fn set_field(&mut self, index: String, value: Dynamic) {
+    pub fn set_field(&mut self, index: String, value: Dynamic) {
         let key = Identifier::from(index);
         self.evt.insert(key, value);
     }

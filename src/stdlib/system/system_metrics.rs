@@ -74,7 +74,17 @@ pub mod metrics_module {
         }
 
         pub mod m {
-
+            pub fn usage() -> metric_type::Metric {
+                thread::sleep(time::Duration::from_millis(100));
+                METRIC_SYS.lock().unwrap().refresh_cpu();
+                let mut c: f64 = 0.0;
+                let mut a: f64 = 0.0;
+                for cpu in METRIC_SYS.lock().unwrap().cpus() {
+                    a += cpu.cpu_usage() as f64;
+                    c += 1.0;
+                }
+                metric_type::Metric::init("used.cpu".to_string(), Dynamic::from((a / c) as f64))
+            }
         }
     }
 }

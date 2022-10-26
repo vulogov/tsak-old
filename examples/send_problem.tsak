@@ -1,0 +1,7 @@
+let p = Problem("theProblem");
+p["NOT_ANSWER"] = 41;
+p.condition("IF_42_MORE_THAN_0", "42 > 0");
+p.condition("SOME_CONDITION", "(42 - NOT_ANSWER) > 42");
+p.condition("ANOTHER_CONDITION", "NOT_ANSWER <= 42");
+let event =  problem::run(p);
+event.send(NR_EVENT, NR_ACCOUNT, NR_INSERT_KEY);

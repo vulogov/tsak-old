@@ -34,6 +34,7 @@ logwatcher = "0.1.1"
 lazy_static = "1.4.0"
 futures = { version = "0.3.*" }
 tokio = {version = "0.2.*", features = ["full"] }
+maver = "0.1.0"
 
 [dependencies.rhai]
 version = "1.10.1"

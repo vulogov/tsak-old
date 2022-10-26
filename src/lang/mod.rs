@@ -38,7 +38,7 @@ impl LangEngine<'_> {
         e.engine.register_global_module(SciPackage::new().as_shared_module());
         e.set_default_scope();
         e.set_cli_scope(&c);
-        stdlib::initlib(&mut e);
+        stdlib::initlib(&mut e, c);
         e.elapsed("Init finished");
         e
     }

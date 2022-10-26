@@ -1,5 +1,6 @@
 extern crate log;
 use crate::lang::{LangEngine};
+use crate::cmd::{Cli};
 pub mod genid;
 pub mod banner;
 
@@ -14,6 +15,7 @@ pub mod tsak_log;
 pub mod input;
 pub mod json;
 pub mod grok;
+pub mod problem;
 
 #[macro_export]
 macro_rules! err {
@@ -25,7 +27,7 @@ macro_rules! err {
 	)
 }
 
-pub fn initlib(engine: &mut LangEngine) {
+pub fn initlib(engine: &mut LangEngine, _c: &Cli) {
     log::trace!("Running STDLIB init");
     uuid::init(&mut engine.engine);
     env::init(&mut engine.engine);
@@ -38,4 +40,5 @@ pub fn initlib(engine: &mut LangEngine) {
     input::init(&mut engine.engine);
     json::init(&mut engine.engine);
     grok::init(&mut engine.engine);
+	problem::init(&mut engine.engine);
 }
