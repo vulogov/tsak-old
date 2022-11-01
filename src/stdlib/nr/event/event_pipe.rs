@@ -12,6 +12,7 @@ use serde_json::{to_string};
 use crate::stdlib::json::json_module::{to_map};
 use crate::stdlib::nr::event::raw::{send_event_payload};
 
+#[derive(Debug)]
 struct Events {
     inq:  VecDeque<String>,
     c:   i64,
@@ -53,7 +54,9 @@ async fn event_sender(api: String, acc: String, key: String)  {
                         let m = to_map(v);
                         out.push(m);
                     }
-                    None => break,
+                    None => {
+                        break;
+                    }
                 }
                 if e.c > 50 {
                     break;
@@ -70,8 +73,8 @@ async fn event_sender(api: String, acc: String, key: String)  {
                 }
             }
             drop(out);
-            e.r = true;
         }
+        e.r = true;
         drop(e);
     }
 }
@@ -85,7 +88,7 @@ pub fn queue_json_payload_to_events(p: String) -> bool {
 pub fn wait_events_for_complete()  {
     log::debug!("Waiting for events queue to clear");
     loop {
-        let _ = async { sleep(Duration::from_millis(500)).await; };
+        let _ = async { sleep(Duration::from_millis(1500)).await; };
         let e = EVENTS.lock().unwrap();
         if e.r && e.inq.len() == 0 {
             log::debug!("Events queue is empty");

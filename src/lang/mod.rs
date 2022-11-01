@@ -5,6 +5,10 @@ use howlong::{HighResolutionTimer};
 use crate::stdlib;
 use crate::cmd::{Cli};
 
+use crate::stdlib::nr::event::event_pipe::{wait_events_for_complete};
+use crate::stdlib::nr::metric::metric_pipe::{wait_metrics_for_complete};
+
+
 pub mod scope;
 
 pub type RhaiResult<T> = std::result::Result<T, Box<EvalAltResult>>;
@@ -55,6 +59,9 @@ impl LangEngine<'_> {
 
 impl Drop for LangEngine<'_> {
     fn drop(&mut self) {
+        log::debug!("Flushing queues");
+        wait_events_for_complete();
+        wait_metrics_for_complete();
         log::debug!("{} takes {:?} to execute", self.name, self.timer.elapsed());
         log::debug!("Engine is finished");
     }

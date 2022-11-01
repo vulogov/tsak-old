@@ -70,8 +70,8 @@ async fn metric_sender(api: String, key: String)  {
                 }
             }
             drop(out);
-            e.r = true;
         }
+        e.r = true;
         drop(e);
     }
 }
