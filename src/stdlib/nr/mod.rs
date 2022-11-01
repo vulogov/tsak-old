@@ -12,6 +12,8 @@ pub mod event;
 pub mod metric;
 pub mod nrlog;
 
+// use crate::stdlib::nr::event::event_pipe;
+
 #[export_module]
 pub mod nr_module {
     pub fn metric(url: &str, key: &str, metric: Map) -> bool {
@@ -38,6 +40,20 @@ pub mod nr_module {
         log::debug!("{:?} takes to send log", t.elapsed());
         return res;
     }
+
+    pub mod queue {
+        #[rhai_fn(name="event")]
+        pub fn event_str(p: String) -> bool {
+            event::event_pipe::queue_json_payload_to_events(p)
+        }
+        #[rhai_fn(name="event")]
+        pub fn event_map(p: Map) -> bool {
+            event::event_pipe::queue_map_payload_to_events(p)
+        }
+        pub fn wait_for_events() {
+            event::event_pipe::wait_events_for_complete();
+        }
+    }
 }
 
 pub fn compress_payload(payload: &String) -> io::Result<Vec<u8>> {
@@ -62,6 +78,7 @@ pub fn init(engine: &mut Engine, scope: &mut Scope) {
     module.set_var("INSTANCE", scope.get_value::<String>("INSTANCE").unwrap());
     engine.register_static_module("newrelic", module.into());
     event::event_type::init(engine);
+    event::event_pipe::init(engine, scope);
     metric::metric_type::init(engine);
     nrlog::log_type::init(engine);
     graphql::nrql_type::init(engine);

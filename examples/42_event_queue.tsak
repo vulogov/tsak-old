@@ -1,0 +1,5 @@
+let event = Event();
+event["instanceId"] = INSTANCE;
+event["answer"] = 42;
+newrelic::queue::event(event.raw());
+newrelic::queue::wait_for_events();

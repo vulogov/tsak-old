@@ -3,7 +3,7 @@ use crate::cmd;
 use std;
 
 pub fn check_sanity(c: cmd::Cli) {
-    log::trace!("NRAPM check_sanity() reached");
+    log::trace!("TSAK check_sanity() reached");
     if c.nr_account == "0" {
         log::error!("You did not specified New Relic account");
         std::process::exit(10)

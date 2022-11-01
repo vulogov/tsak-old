@@ -33,7 +33,7 @@ grok = "2.0.0"
 logwatcher = "0.1.1"
 lazy_static = "1.4.0"
 futures = { version = "0.3.*" }
-tokio = {version = "0.2.*", features = ["full"] }
+tokio = {version = "1.21.*", features = ["full", "time"] }
 maver = "0.1.0"
 
 [dependencies.rhai]
