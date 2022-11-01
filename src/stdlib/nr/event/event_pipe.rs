@@ -88,7 +88,7 @@ pub fn queue_json_payload_to_events(p: String) -> bool {
 pub fn wait_events_for_complete()  {
     log::debug!("Waiting for events queue to clear");
     loop {
-        let _ = async { sleep(Duration::from_millis(1500)).await; };
+        let _ = async { sleep(Duration::from_millis(500)).await; };
         let e = EVENTS.lock().unwrap();
         if e.r && e.inq.len() == 0 {
             log::debug!("Events queue is empty");
