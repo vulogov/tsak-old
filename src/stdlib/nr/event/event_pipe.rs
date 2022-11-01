@@ -55,6 +55,9 @@ async fn event_sender(api: String, acc: String, key: String)  {
                     }
                     None => break,
                 }
+                if e.c > 50 {
+                    break;
+                }
             }
             match to_string(&out) {
                 Ok(payload) => {
