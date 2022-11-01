@@ -53,6 +53,17 @@ pub mod nr_module {
         pub fn wait_for_events() {
             event::event_pipe::wait_events_for_complete();
         }
+        #[rhai_fn(name="metric")]
+        pub fn metric_str(p: String) -> bool {
+            metric::metric_pipe::queue_json_payload_to_metrics(p)
+        }
+        #[rhai_fn(name="metric")]
+        pub fn metric_map(p: Map) -> bool {
+            metric::metric_pipe::queue_map_payload_to_metrics(p)
+        }
+        pub fn wait_for_metrics() {
+            metric::metric_pipe::wait_metrics_for_complete();
+        }
     }
 }
 
@@ -80,6 +91,7 @@ pub fn init(engine: &mut Engine, scope: &mut Scope) {
     event::event_type::init(engine);
     event::event_pipe::init(engine, scope);
     metric::metric_type::init(engine);
+    metric::metric_pipe::init(engine, scope);
     nrlog::log_type::init(engine);
     graphql::nrql_type::init(engine);
     graphql::result_type::init(engine);
