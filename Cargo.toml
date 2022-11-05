@@ -35,6 +35,7 @@ lazy_static = "1.4.0"
 futures = { version = "0.3.*" }
 tokio = {version = "1.21.*", features = ["full", "time"] }
 maver = "0.1.0"
+fakeit = "1.1.1"
 
 [dependencies.rhai]
 version = "1.10.1"

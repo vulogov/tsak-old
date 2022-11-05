@@ -17,6 +17,7 @@ pub mod json;
 pub mod grok;
 pub mod problem;
 pub mod nn;
+pub mod fake;
 
 #[macro_export]
 macro_rules! err {
@@ -43,4 +44,5 @@ pub fn initlib(engine: &mut LangEngine, _c: &Cli) {
     grok::init(&mut engine.engine);
 	problem::init(&mut engine.engine);
 	nn::init(&mut engine.engine);
+	fake::init(&mut engine.engine);
 }
