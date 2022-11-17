@@ -1,0 +1,13 @@
+let finding = #{
+  source:     "TSAKSecurity",
+  title:      "Some security vulnerability",
+  message:    "This is TSAK-generated sample vulnerability",
+  issueType:  "Library Vulnerability",
+  issueId:    "TSAKSEC-001",
+  severity:   "INFO",
+  entityType: "Repository",
+  entityLookupValue: "host.example.com",
+  remediationExists: false,
+  detectedAt:  timestamp::timestamp_ms(),
+};
+newrelic::security(NR_SEC_API, NR_INSERT_KEY, finding);

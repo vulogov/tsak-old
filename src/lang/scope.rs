@@ -18,6 +18,7 @@ impl LangEngine<'_> {
         self.scope.push("NR_LOG", c.nr_log.clone());
         self.scope.push("NR_TRACE", c.nr_trace.clone());
         self.scope.push("NR_API", c.nr_api.clone());
+        self.scope.push("NR_SEC_API", c.nr_sec_api.clone());
         // And keys
         self.scope.push("NR_ACCOUNT", c.nr_account.clone());
         self.scope.push("NR_API_KEY", c.nr_api_key.clone());

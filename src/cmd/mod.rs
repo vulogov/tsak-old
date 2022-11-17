@@ -72,6 +72,9 @@ pub struct Cli {
     #[clap(long, default_value_t = String::from("api.newrelic.com"), help="Hostname for New Relic API")]
     pub nr_api: String,
 
+    #[clap(long, default_value_t = String::from("security-api.newrelic.com"), help="Hostname for New Relic Security API")]
+    pub nr_sec_api: String,
+
     #[clap(help="NR account", long, default_value_t = String::from(env::var("NEWRELIC_ACCOUNT").unwrap_or("0".to_string())))]
     pub nr_account: String,
 

@@ -11,6 +11,7 @@ pub mod graphql;
 pub mod event;
 pub mod metric;
 pub mod nrlog;
+pub mod security;
 
 // use crate::stdlib::nr::event::event_pipe;
 
@@ -38,6 +39,14 @@ pub mod nr_module {
         let t = howlong::HighResolutionTimer::new();
         let res = nrlog::raw::send_log_payload(&url.to_string(), &key.to_string(), &payload);
         log::debug!("{:?} takes to send log", t.elapsed());
+        return res;
+    }
+    pub fn security(url: &str, key: &str, metric: Map) -> bool {
+        let payload = format!("[{}]", format_map_as_json(&metric));
+        log::debug!("Payload: {}", &payload);
+        let t = howlong::HighResolutionTimer::new();
+        let res = security::raw::send_security_payload(&url.to_string(), &key.to_string(), &payload);
+        log::debug!("{:?} takes to send finding", t.elapsed());
         return res;
     }
 
@@ -82,6 +91,7 @@ pub fn init(engine: &mut Engine, scope: &mut Scope) {
     module.set_var("NR_LOG", scope.get_value::<String>("NR_LOG").unwrap());
     module.set_var("NR_TRACE", scope.get_value::<String>("NR_TRACE").unwrap());
     module.set_var("NR_API", scope.get_value::<String>("NR_API").unwrap());
+    module.set_var("NR_SEC_API", scope.get_value::<String>("NR_SEC_API").unwrap());
     module.set_var("NR_ACCOUNT", scope.get_value::<String>("NR_ACCOUNT").unwrap());
     module.set_var("NR_API_KEY", scope.get_value::<String>("NR_API_KEY").unwrap());
     module.set_var("NR_INSERT_KEY", scope.get_value::<String>("NR_INSERT_KEY").unwrap());
@@ -91,7 +101,9 @@ pub fn init(engine: &mut Engine, scope: &mut Scope) {
     event::event_type::init(engine);
     event::event_pipe::init(engine, scope);
     metric::metric_type::init(engine);
+    security::security_type::init(engine);
     metric::metric_pipe::init(engine, scope);
+    security::security_pipe::init(engine, scope);
     nrlog::log_type::init(engine);
     graphql::nrql_type::init(engine);
     graphql::result_type::init(engine);
