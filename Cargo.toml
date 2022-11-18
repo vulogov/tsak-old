@@ -18,7 +18,6 @@ new_string_template = "1.4.0"
 rhai-rand = "0.1.4"
 rhai-sci = "0.1.7"
 rustyline = "10.0.0"
-serde = "1.0.145"
 ureq = "2.5.0"
 serde_json = "1.0.86"
 os_pipe = "1.1.1"
@@ -36,6 +35,10 @@ futures = { version = "0.3.*" }
 tokio = {version = "1.21.*", features = ["full", "time"] }
 maver = "0.1.0"
 fakeit = "1.1.1"
+csv = "1.1"
+serde = { version = "1", features = ["derive"] }
+rustsv = "0.1.5"
+
 
 [dependencies.rhai]
 version = "1.10.1"

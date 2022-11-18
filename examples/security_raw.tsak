@@ -3,7 +3,7 @@ let finding = #{
   title:      "Some security vulnerability",
   message:    "This is TSAK-generated sample vulnerability",
   issueType:  "Library Vulnerability",
-  issueId:    "TSAKSEC-001",
+  issueId:    "TSAKSEC-002",
   severity:   "INFO",
   entityType: "Repository",
   entityLookupValue: "host.example.com",
