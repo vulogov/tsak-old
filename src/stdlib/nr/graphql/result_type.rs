@@ -1,8 +1,9 @@
 extern crate log;
-use rhai::{Engine};
+use rhai::{Engine, Array};
 use jsonpath_rust::JsonPathFinder;
 use polars::prelude::*;
 use std::io::Cursor;
+use std::vec::Vec;
 
 #[derive(Debug, Clone)]
 pub struct NRResult {
@@ -46,11 +47,40 @@ impl NRResult {
             }
         }
     }
+    fn select(&mut self, c: Array) -> NRResult {
+        let mut i: Vec<String> = Vec::new();
+        for k in c {
+            match k.into_string() {
+                Ok(key) => i.push(key),
+                Err(_) => continue,
+            }
+        }
+        let mut res = NRResult::new();
+        match self.df.select(i) {
+            Ok(df) => res.df = df,
+            Err(_) => {}
+        }
+        return res;
+    }
+    fn get_field(&mut self, c: String) -> Array {
+        let mut res = Array::new();
+        match self.df.column(&c) {
+            Ok(s) => {
+
+            }
+            Err(err) => {
+                log::error!("Result selection error: {}", err);
+            }
+        }
+        return res;
+    }
 }
 
 pub fn init(engine: &mut Engine) {
     log::trace!("Running STDLIB::Result type init");
     engine.register_type::<NRResult>()
           .register_fn("Result", NRResult::init)
+          .register_fn("select", NRResult::select)
+          .register_indexer_get(NRResult::get_field)
           .register_fn("to_string", |x: &mut NRResult| format!("{:?}", x.df) );
 }
