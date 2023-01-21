@@ -1,0 +1,2 @@
+let res = input::snmp("127.0.0.1:161", "1.3.6.1.2.1.1.1", "public");
+print(res)
