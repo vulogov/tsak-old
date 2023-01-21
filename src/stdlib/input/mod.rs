@@ -6,6 +6,7 @@ use crate::tsak_lib::io::get_file;
 
 pub mod command;
 pub mod watch;
+pub mod snmp;
 
 #[export_module]
 pub mod input_module {
@@ -26,6 +27,9 @@ pub mod input_module {
     }
     pub fn command(c: &str, a: String) -> String {
         command::os_command(c, &a)
+    }
+    pub fn snmp(addr: String, oid: String, community: String) -> String {
+        snmp::snmp_get(&addr, &oid, &community)
     }
 }
 

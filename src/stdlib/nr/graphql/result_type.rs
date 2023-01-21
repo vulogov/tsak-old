@@ -66,7 +66,7 @@ impl NRResult {
         let mut res = Array::new();
         match self.df.column(&c) {
             Ok(s) => {
-
+                log::debug!("Got the column: {}", s);
             }
             Err(err) => {
                 log::error!("Result selection error: {}", err);
