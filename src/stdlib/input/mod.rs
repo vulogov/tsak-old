@@ -1,5 +1,5 @@
 extern crate log;
-use rhai::{Engine};
+use rhai::{Engine, Map};
 use rhai::plugin::*;
 use fsio::{file};
 use crate::tsak_lib::io::get_file;
@@ -7,6 +7,7 @@ use crate::tsak_lib::io::get_file;
 pub mod command;
 pub mod watch;
 pub mod snmp;
+pub mod prometheus;
 
 #[export_module]
 pub mod input_module {
@@ -30,6 +31,9 @@ pub mod input_module {
     }
     pub fn snmp(addr: String, oid: String, community: String) -> Dynamic {
         snmp::snmp_get(&addr, &oid, &community)
+    }
+    pub fn prometheus(addr: String) -> Map {
+        prometheus::prometheus_get(&addr)
     }
 }
 
