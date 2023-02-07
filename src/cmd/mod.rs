@@ -15,6 +15,7 @@ mod tsak_event;
 mod tsak_metric;
 mod tsak_log;
 mod tsak_exec;
+mod tsak_eval;
 
 
 pub fn init() {
@@ -44,6 +45,9 @@ pub fn init() {
         }
         Commands::Exec(exec) => {
             tsak_exec::run_exec(&cli, &exec.script, &exec.args);
+        }
+        Commands::Eval(eval) => {
+            tsak_eval::run_eval(&cli, &eval.args);
         }
     }
 }
@@ -103,11 +107,19 @@ enum Commands {
     Metric(Metric),
     Log(Log),
     Exec(Exec),
+    Eval(Eval),
 }
 
 #[derive(Args, Clone, Debug)]
 #[clap(about="Run Interactive shell")]
 struct Shell {
+    #[clap(last = true)]
+    args: Vec<String>,
+}
+
+#[derive(Args, Clone, Debug)]
+#[clap(about="Evaluate TSAK-script expression")]
+struct Eval {
     #[clap(last = true)]
     args: Vec<String>,
 }

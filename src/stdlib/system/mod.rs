@@ -1,6 +1,6 @@
 extern crate log;
 use howlong;
-use std::{thread, time};
+use std::{thread, time, env};
 use rhai::{Engine};
 use rhai::plugin::*;
 
@@ -17,6 +17,15 @@ pub mod system_module {
         let t = howlong::HighResolutionTimer::new();
         thread::sleep(time::Duration::from_millis(s as u64));
         log::debug!("slept for {:?}", t.elapsed());
+    }
+    pub fn env(n: String) -> String {
+        match env::var(&n) {
+            Ok(val) => return val,
+            Err(e) => {
+                log::error!("Error fetching environment variable {}: {:?}", &n, e);
+            }
+        }
+        return "".to_string();
     }
 }
 
