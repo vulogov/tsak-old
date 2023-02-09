@@ -19,6 +19,9 @@ pub mod problem;
 pub mod nn;
 pub mod fake;
 pub mod csv;
+pub mod twitter;
+pub mod internetsearch;
+
 
 #[macro_export]
 macro_rules! err {
@@ -47,4 +50,6 @@ pub fn initlib(engine: &mut LangEngine, _c: &Cli) {
 	nn::init(&mut engine.engine);
 	fake::init(&mut engine.engine);
 	csv::init(&mut engine.engine);
+	twitter::init(&mut engine.engine);
+	internetsearch::init(&mut engine.engine);
 }

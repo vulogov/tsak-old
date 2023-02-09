@@ -1,5 +1,5 @@
 use std::io::{self, BufRead};
-use curl::easy::{Easy2, Handler, WriteError};
+use curl::easy::{Easy2, Handler, WriteError, List};
 
 pub fn get_file(some_url: String) -> String {
     match &some_url as &str {
@@ -43,6 +43,33 @@ fn get_file_from_url(some_url: String) -> String {
 
     let mut easy = Easy2::new(Collector(Vec::new()));
     let _ = easy.useragent("TSAK");
+    easy.get(true).unwrap();
+    easy.url(&some_url).unwrap();
+    match easy.perform() {
+        Err(err) => {
+            log::error!("Request from {} returns {}", some_url, err);
+            return "".to_string();
+        }
+        _ => {}
+    }
+    let contents = easy.get_ref();
+    String::from_utf8_lossy(&contents.0).to_string()
+}
+
+pub fn get_file_from_url_with_bearer(some_url: String, bearer_token: String) -> String {
+    struct Collector(Vec<u8>);
+
+    impl Handler for Collector {
+    fn write(&mut self, data: &[u8]) -> Result<usize, WriteError> {
+            self.0.extend_from_slice(data);
+            Ok(data.len())
+        }
+    }
+    let mut list = List::new();
+    list.append(format!("Authorization: Bearer {}", bearer_token).as_str());
+    let mut easy = Easy2::new(Collector(Vec::new()));
+    let _ = easy.useragent("TSAK");
+    easy.http_headers(list).unwrap();
     easy.get(true).unwrap();
     easy.url(&some_url).unwrap();
     match easy.perform() {
