@@ -1,0 +1,6 @@
+let g = Grok();
+
+g["USERNAME"] = "[a-zA-Z0-9._-]+";
+let res = g.do_match("root is root", "root is %{USERNAME}");
+
+print(res);

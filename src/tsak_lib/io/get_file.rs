@@ -56,7 +56,8 @@ fn get_file_from_url(some_url: String) -> String {
     String::from_utf8_lossy(&contents.0).to_string()
 }
 
-pub fn get_file_from_url_with_bearer(some_url: String, bearer_token: String) -> String {
+
+fn get_file_from_url_with_authorization(some_url: String, kind: String, token: String) -> String {
     struct Collector(Vec<u8>);
 
     impl Handler for Collector {
@@ -66,7 +67,7 @@ pub fn get_file_from_url_with_bearer(some_url: String, bearer_token: String) -> 
         }
     }
     let mut list = List::new();
-    list.append(format!("Authorization: Bearer {}", bearer_token).as_str());
+    let _ = list.append(format!("Authorization: {} {}", kind, token).as_str());
     let mut easy = Easy2::new(Collector(Vec::new()));
     let _ = easy.useragent("TSAK");
     easy.http_headers(list).unwrap();
@@ -81,4 +82,12 @@ pub fn get_file_from_url_with_bearer(some_url: String, bearer_token: String) -> 
     }
     let contents = easy.get_ref();
     String::from_utf8_lossy(&contents.0).to_string()
+}
+
+pub fn get_file_from_url_with_bearer(some_url: String, token: String) -> String {
+    get_file_from_url_with_authorization(some_url, "Bearer".to_string(), token)
+}
+
+pub fn get_file_from_url_with_token(some_url: String, token: String) -> String {
+    get_file_from_url_with_authorization(some_url, "Token".to_string(), token)
 }

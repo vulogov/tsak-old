@@ -8,6 +8,9 @@ pub mod command;
 pub mod watch;
 pub mod snmp;
 pub mod prometheus;
+pub mod zabbix;
+pub mod ssh;
+
 
 #[export_module]
 pub mod input_module {
@@ -34,6 +37,12 @@ pub mod input_module {
     }
     pub fn prometheus(addr: String) -> Map {
         prometheus::prometheus_get(&addr)
+    }
+    pub fn zabbix(addr: String, key: String) -> String {
+        zabbix::zabbix_get(addr, key)
+    }
+    pub fn ssh(addr: String, cmd: String) -> String {
+        ssh::ssh_command(addr, cmd)
     }
 }
 

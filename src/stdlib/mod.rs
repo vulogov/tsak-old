@@ -21,6 +21,7 @@ pub mod fake;
 pub mod csv;
 pub mod twitter;
 pub mod internetsearch;
+pub mod github;
 
 
 #[macro_export]
@@ -52,4 +53,5 @@ pub fn initlib(engine: &mut LangEngine, _c: &Cli) {
 	csv::init(&mut engine.engine);
 	twitter::init(&mut engine.engine);
 	internetsearch::init(&mut engine.engine);
+	github::init(&mut engine.engine);
 }

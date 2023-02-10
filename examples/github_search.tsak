@@ -1,0 +1,3 @@
+let token = system::env("GITHUB_TOKEN");
+let res = github::search("github+in:file+language:rust", token);
+print(res);

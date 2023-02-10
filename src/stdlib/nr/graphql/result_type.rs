@@ -63,7 +63,7 @@ impl NRResult {
         return res;
     }
     fn get_field(&mut self, c: String) -> Array {
-        let mut res = Array::new();
+        let res = Array::new();
         match self.df.column(&c) {
             Ok(s) => {
                 log::debug!("Got the column: {}", s);
