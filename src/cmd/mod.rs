@@ -16,6 +16,7 @@ mod tsak_metric;
 mod tsak_log;
 mod tsak_exec;
 mod tsak_eval;
+mod tsak_spawn;
 
 
 pub fn init() {
@@ -48,6 +49,9 @@ pub fn init() {
         }
         Commands::Eval(eval) => {
             tsak_eval::run_eval(&cli, &eval.args);
+        }
+        Commands::Spawn(spwn) => {
+            tsak_spawn::run_spawn(&cli, &spwn.script, &spwn.args);
         }
     }
 }
@@ -108,6 +112,7 @@ enum Commands {
     Log(Log),
     Exec(Exec),
     Eval(Eval),
+    Spawn(Spawn),
 }
 
 #[derive(Args, Clone, Debug)]
@@ -191,6 +196,16 @@ struct Log {
 #[derive(Args, Clone, Debug)]
 #[clap(about="Execute TSAK script")]
 struct Exec {
+    #[clap(help="Path to TSAK script", short, long, default_value_t = String::from("-"))]
+    pub script: String,
+
+    #[clap(last = true)]
+    args: Vec<String>,
+}
+
+#[derive(Args, Clone, Debug)]
+#[clap(about="Execute TSAK script and spawn some scripts as background threads")]
+struct Spawn {
     #[clap(help="Path to TSAK script", short, long, default_value_t = String::from("-"))]
     pub script: String,
 

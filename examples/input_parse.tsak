@@ -1,2 +1,4 @@
+let g = Grok();
+g["USERNAME"] = "[a-zA-Z0-9._-]+";
 let t = Text(input::stdin());
-print(t.lines());
+print(t.lines(g, "root is %{USERNAME}"));

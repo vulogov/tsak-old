@@ -3,6 +3,7 @@ use voca_rs::*;
 use rhai::{Engine, Dynamic, Array};
 use rhai::plugin::*;
 use regex::Regex;
+use crate::stdlib::grok;
 
 #[derive(Debug, Clone)]
 struct Text {
@@ -35,6 +36,16 @@ impl Text {
             }
             res.push(Dynamic::from(line));
         }
+        res
+    }
+    fn lines_grok(&mut self, mut g: grok::NRGrok, p: String) -> Array {
+        let mut res = Array::new();
+
+        for l in self.t.lines() {
+            let line = manipulate::trim(&manipulate::expand_tabs(&l.to_string(), 1), "");
+            res.push(Dynamic::from(g.do_match(line, p.clone())));
+        }
+
         res
     }
     fn lines_match(&mut self, r: String) -> Array {
@@ -90,6 +101,7 @@ pub fn init(engine: &mut Engine) {
           .register_fn("raw", Text::raw)
           .register_fn("lines", Text::lines)
           .register_fn("lines", Text::lines_match)
+          .register_fn("lines", Text::lines_grok)
           .register_fn("to_string", |x: &mut Text| format!("{}", x.t) );
 
 }

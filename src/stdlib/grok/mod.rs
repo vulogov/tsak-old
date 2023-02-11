@@ -4,7 +4,7 @@ use grok::Grok;
 use std::collections::HashMap;
 
 #[derive(Debug, Clone)]
-struct NRGrok {
+pub struct NRGrok {
     g: HashMap<String, String>,
 }
 
@@ -26,7 +26,7 @@ impl NRGrok {
     fn set_field(&mut self, index: String, value: String) {
         self.g.insert(index, value);
     }
-    fn do_match(&mut self, s: String, p: String) -> Map {
+    pub fn do_match(&mut self, s: String, p: String) -> Map {
         let mut grok = Grok::with_default_patterns();
         for (k, v) in  &self.g {
             grok.add_pattern(k, v);
