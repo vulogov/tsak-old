@@ -22,7 +22,7 @@ pub fn run_spawn(c: &cmd::Cli, e: &String, args: &Vec<String>)  {
         let thr_script = script.clone();
         let thr_run_script = run_script.clone();
         let thr_s = engine.s.clone();
-        let thr_r = engine.r;
+        let thr_r = engine.r.clone();
         task::spawn(
             async move {
                 log::trace!("Spawned for {}", &thr_script);

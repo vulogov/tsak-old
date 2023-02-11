@@ -15,8 +15,8 @@ lexical-core = "0.8.5"
 log = "0.4.17"
 neofiglet = "0.1.1"
 new_string_template = "1.4.0"
-rhai-rand = "0.1.4"
-rhai-sci = "0.1.7"
+rhai-rand = "*"
+rhai-sci = "*"
 rustyline = "10.0.0"
 ureq = "2.5.0"
 serde_json = "1.0.86"
@@ -42,10 +42,11 @@ snmp = "0.2.2"
 prometheus-parse = "0.2.3"
 urlencoding = "2.1.2"
 ssh = "0.1.4"
+crossbeam-channel = "0.5.6"
 
 
 [dependencies.rhai]
-version = "1.10.1"
+version = "1.12.*"
 features = [
   "std",
   "serde",

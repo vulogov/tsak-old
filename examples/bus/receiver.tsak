@@ -1,0 +1,5 @@
+loop {
+  system::sleep(1);
+  let val = internal::bus.try_recv();
+  log::info("Received="+val);
+}

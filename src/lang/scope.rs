@@ -28,6 +28,11 @@ impl LangEngine<'_> {
         self.scope.push("INSTANCE", c.name.clone());
 
     }
+    pub fn set_channels_to_scope(&mut self) {
+        log::debug!("Setting TSAK default channels to scope");
+        self.scope.push("SEND_CHANNEL", self.s.clone());
+        self.scope.push("RECV_CHANNEL", self.r.clone());
+    }
     pub fn set_extra_scope(&mut self, args: &Vec<String>) {
         for arg in args {
             let pair: Vec<_> = arg.splitn(2, "=").collect();
