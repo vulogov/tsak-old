@@ -17,12 +17,15 @@ mod tsak_log;
 mod tsak_exec;
 mod tsak_eval;
 mod tsak_spawn;
+mod tsak_init;
+mod tsak_fin;
 
 
 pub fn init() {
     let cli = Cli::parse();
     setloglevel::setloglevel(&cli);
     sanity::check_sanity(cli.clone());
+    tsak_init::tsak_init(cli.clone());
     match &cli.command {
         Commands::Shell(shell) => {
             log::debug!("Interactive shell requested");
@@ -54,6 +57,7 @@ pub fn init() {
             tsak_spawn::run_spawn(&cli, &spwn.script, &spwn.args);
         }
     }
+    tsak_fin::tsak_fin();
 }
 
 #[derive(Parser, Clone)]
