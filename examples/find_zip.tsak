@@ -1,0 +1,6 @@
+fn echo(f) {
+  return f;
+}
+
+let res = fs::search::zip("/etc", echo);
+print(res);
