@@ -49,6 +49,7 @@ text_placeholder = "0.4.0"
 rust_search = "2.1.0"
 fuzzy-matcher = "0.3.7"
 distance = "0.4.0"
+charabia = "0.7.0"
 
 
 [dependencies.rhai]
