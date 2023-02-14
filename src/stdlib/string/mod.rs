@@ -7,6 +7,7 @@ use crate::stdlib::grok;
 
 mod template;
 mod zip;
+mod includes;
 
 #[derive(Debug, Clone)]
 pub struct Text {
@@ -91,6 +92,12 @@ pub mod string_module {
     pub fn ends_with(a: &str, b: &str) -> bool {
     	a.ends_with(b)
     }
+    pub fn includes(a: &str, b: &str) -> bool {
+    	query::includes(a,b,0)
+    }
+    pub fn matches(a: &str, b: &str) -> bool {
+    	query::matches(a,b,0)
+    }
 }
 
 pub fn init(engine: &mut Engine) {
@@ -106,6 +113,7 @@ pub fn init(engine: &mut Engine) {
           .register_fn("lines", Text::lines)
           .register_fn("lines", Text::lines_match)
           .register_fn("lines", Text::lines_grok)
+          .register_fn("includes", Text::includes)
           .register_fn("to_string", |x: &mut Text| format!("{}", x.t) );
 
 }
