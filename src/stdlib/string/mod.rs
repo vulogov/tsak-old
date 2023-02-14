@@ -11,6 +11,7 @@ mod includes;
 mod eval;
 mod fuzzy;
 mod tokens;
+mod tokens_text;
 
 #[derive(Debug, Clone)]
 pub struct Text {
@@ -131,6 +132,7 @@ pub fn init(engine: &mut Engine) {
           .register_fn("lines", Text::lines_match)
           .register_fn("lines", Text::lines_grok)
           .register_fn("includes", Text::includes)
+          .register_fn("tokenize", Text::tokenize)
           .register_fn("to_string", |x: &mut Text| format!("{}", x.t) );
 
 }

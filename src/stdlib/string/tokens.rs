@@ -46,7 +46,7 @@ fn is_escaped(in_str: &str, mut pos: usize) -> bool {
 /// and double quotes), also supports escaping quotes using `\` (note
 /// that it will remove any backslashes used to escape things, so
 /// escape any backslashes you want left in.)
-fn split_str(string: &str) -> Vec<String> {
+pub fn split_str(string: &str) -> Vec<String> {
     let mut last: Option<char> = None;
     let mut split_locs = Vec::<usize>::new();
     let mut removed = 0;
