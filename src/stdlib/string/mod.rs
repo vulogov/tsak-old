@@ -9,6 +9,8 @@ mod template;
 mod zip;
 mod includes;
 mod eval;
+mod fuzzy;
+mod tokens;
 
 #[derive(Debug, Clone)]
 pub struct Text {
@@ -107,6 +109,17 @@ pub fn init(engine: &mut Engine) {
     module.set_native_fn("zip", zip::lines_zip);
     module.set_native_fn("expr", eval::str_eval);
     module.set_native_fn("expr", eval::txt_eval);
+    let mut fuzzy_module = Module::new();
+    fuzzy_module.set_native_fn("Match", fuzzy::str_match);
+    fuzzy_module.set_native_fn("Levenshtein", fuzzy::str_match_levenshtein);
+    fuzzy_module.set_native_fn("Damerau", fuzzy::str_match_damerau);
+    module.set_sub_module("fuzzy", fuzzy_module);
+
+    let mut token_module = Module::new();
+    token_module.set_native_fn("tokenize", tokens::str_tokenize);
+    token_module.set_native_fn("tokenize", tokens::str_tokenize_text);
+    module.set_sub_module("tokenize", token_module);
+
     engine.register_static_module("str", module.into());
 
 
