@@ -5,8 +5,11 @@ use rhai::plugin::*;
 use regex::Regex;
 use crate::stdlib::grok;
 
+mod template;
+mod zip;
+
 #[derive(Debug, Clone)]
-struct Text {
+pub struct Text {
     t: String,
 }
 
@@ -92,7 +95,8 @@ pub mod string_module {
 
 pub fn init(engine: &mut Engine) {
     log::trace!("Running STDLIB::str init");
-    let module = exported_module!(string_module);
+    let mut module = exported_module!(string_module);
+    module.set_native_fn("zip", zip::lines_zip);
     engine.register_static_module("str", module.into());
 
     engine.register_type::<Text>()

@@ -45,6 +45,7 @@ ssh = "0.1.4"
 crossbeam-channel = "0.5.6"
 bastion = "0.4.5"
 anyhow = "1.0.69"
+text_placeholder = "0.4.0"
 
 
 [dependencies.rhai]
