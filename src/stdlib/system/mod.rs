@@ -11,7 +11,7 @@ use serde_json::{to_string};
 use crate::lang::{LangEngine};
 pub mod system_metrics;
 
-
+mod run;
 
 #[export_module]
 pub mod system_module {
@@ -125,6 +125,8 @@ pub fn init(engine: &mut LangEngine) {
 
     let mut internal_module = Module::new();
     internal_module.set_id("internal");
+    internal_module.set_native_fn("run", run::str_run);
+    internal_module.set_native_fn("run", run::txt_run);
     let mut default_bus = NRBus::init();
     default_bus.s = engine.s.clone();
     default_bus.r = engine.r.clone();

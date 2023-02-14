@@ -8,6 +8,7 @@ use crate::stdlib::grok;
 mod template;
 mod zip;
 mod includes;
+mod eval;
 
 #[derive(Debug, Clone)]
 pub struct Text {
@@ -28,7 +29,7 @@ impl Text {
         res.t = t.clone();
         res
     }
-    fn raw(&mut self) -> String {
+    pub fn raw(&mut self) -> String {
         self.t.clone()
     }
     fn lines(&mut self) -> Array {
@@ -104,7 +105,10 @@ pub fn init(engine: &mut Engine) {
     log::trace!("Running STDLIB::str init");
     let mut module = exported_module!(string_module);
     module.set_native_fn("zip", zip::lines_zip);
+    module.set_native_fn("expr", eval::str_eval);
+    module.set_native_fn("expr", eval::txt_eval);
     engine.register_static_module("str", module.into());
+
 
     engine.register_type::<Text>()
           .register_fn("Text", Text::init)
