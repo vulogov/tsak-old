@@ -23,6 +23,7 @@ pub mod twitter;
 pub mod internetsearch;
 pub mod github;
 pub mod fs;
+pub mod net;
 
 
 #[macro_export]
@@ -56,4 +57,5 @@ pub fn initlib(engine: &mut LangEngine, _c: &Cli) {
 	internetsearch::init(&mut engine.engine);
 	github::init(&mut engine.engine);
 	fs::init(&mut engine.engine);
+	net::init(&mut engine.engine);
 }
