@@ -53,6 +53,7 @@ charabia = "0.7.0"
 reachable = "0.2.2"
 ndarray = "0.15.6"
 compute = "0.2.3"
+ta = "0.5.0"
 
 
 [dependencies.rhai]

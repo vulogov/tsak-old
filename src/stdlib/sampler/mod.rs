@@ -105,6 +105,7 @@ pub fn init(engine: &mut Engine) {
           .register_fn("get", Sampler::get)
           .register_fn("downsample", Sampler::downsample)
           .register_fn("smooth", Sampler::smooth)
+          .register_fn("exp_smooth", Sampler::exp_smooth)
           .register_fn("normalize", Sampler::normalize)
           .register_fn("to_string", |x: &mut Sampler| format!("{:?}", x.d) );
 

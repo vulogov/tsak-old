@@ -1,29 +1,24 @@
 extern crate log;
 use crate::stdlib::sampler::Sampler;
-use rhai::{EvalAltResult};
 
-use compute::statistics;
+use ta::indicators::{SimpleMovingAverage, ExponentialMovingAverage};
+use ta::Next;
 
 impl Sampler {
-    pub fn smooth(&mut self) -> Result<Sampler, Box<EvalAltResult>> {
+    pub fn smooth(&mut self) -> Sampler {
         let mut res = Sampler::init();
-        let mut y: Vec<f64> = Vec::new();
+        let mut sma = SimpleMovingAverage::new(3).unwrap();
         for i in 0..128 {
-            y.push(*self.d.get(i).unwrap());
+            res.try_set(sma.next(*self.d.get(i).unwrap()));
         }
-        let std_y  = statistics::mean(&y);
-        if std_y == 0.0 {
-            return Err("Can not smooth this sample".into());
+        res
+    }
+    pub fn exp_smooth(&mut self) -> Sampler {
+        let mut res = Sampler::init();
+        let mut sma = ExponentialMovingAverage::new(3).unwrap();
+        for i in 0..128 {
+            res.try_set(sma.next(*self.d.get(i).unwrap()));
         }
-        let mean_y = statistics::mean(&y);
-        for v in y {
-            let val = ((v-mean_y)/std_y) as f64;
-            if val == -1.0 {
-                res.try_set(0.0 as f64);
-            } else {
-                res.try_set(val);
-            }
-        }
-        Result::Ok(res)
+        res
     }
 }
