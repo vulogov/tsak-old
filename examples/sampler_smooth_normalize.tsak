@@ -1,0 +1,6 @@
+let sample = Sampler();
+
+for i in 1..128 {
+  sample.set(rand_float(1.0, 100.0));
+}
+print(sample.smooth().get());
