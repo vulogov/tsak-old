@@ -24,6 +24,7 @@ pub mod internetsearch;
 pub mod github;
 pub mod fs;
 pub mod net;
+pub mod sampler;
 
 
 #[macro_export]
@@ -58,4 +59,5 @@ pub fn initlib(engine: &mut LangEngine, _c: &Cli) {
 	github::init(&mut engine.engine);
 	fs::init(&mut engine.engine);
 	net::init(&mut engine.engine);
+	sampler::init(&mut engine.engine);
 }
