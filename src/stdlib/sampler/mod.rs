@@ -87,6 +87,32 @@ impl Sampler {
         }
         Dynamic::from(res)
     }
+    fn car(self: &mut Sampler, n: i64) -> Dynamic {
+        let mut res = Array::new();
+        if n <= 0 {
+            return Dynamic::from(res);
+        }
+        for v in 0..n as usize {
+            match self.d.get(v as usize) {
+                Some(val) => res.push(Dynamic::from(val.clone())),
+                None => continue,
+            }
+        }
+        Dynamic::from(res)
+    }
+    fn cdr(self: &mut Sampler, n: i64) -> Dynamic {
+        let mut res = Array::new();
+        if n >= 128 {
+            return Dynamic::from(res);
+        }
+        for v in (n as usize)..129 {
+            match self.d.get(v as usize) {
+                Some(val) => res.push(Dynamic::from(val.clone())),
+                None => continue,
+            }
+        }
+        Dynamic::from(res)
+    }
 }
 
 #[export_module]
@@ -109,6 +135,8 @@ pub fn init(engine: &mut Engine) {
           .register_fn("smooth", Sampler::smooth)
           .register_fn("exp_smooth", Sampler::exp_smooth)
           .register_fn("normalize", Sampler::normalize)
+          .register_fn("car", Sampler::car)
+          .register_fn("cdr", Sampler::cdr)
           .register_fn("to_string", |x: &mut Sampler| format!("{:?}", x.d) );
 
     let mut module = exported_module!(sampler_module);
