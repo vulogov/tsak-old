@@ -7,6 +7,8 @@ use std::collections::VecDeque;
 
 mod smooth;
 mod normalize;
+mod generate;
+mod distributions;
 
 #[derive(Debug, Clone)]
 pub struct Sampler {
@@ -109,8 +111,19 @@ pub fn init(engine: &mut Engine) {
           .register_fn("normalize", Sampler::normalize)
           .register_fn("to_string", |x: &mut Sampler| format!("{:?}", x.d) );
 
-    let module = exported_module!(sampler_module);
-
+    let mut module = exported_module!(sampler_module);
+    module.set_native_fn("make_normal", distributions::create_normal_normalized_dist);
+    module.set_native_fn("Normal", distributions::create_normal_dist);
+    module.set_native_fn("Uniform", distributions::create_uniform_normalized_dist);
+    module.set_native_fn("Uniform", distributions::create_uniform_dist);
+    module.set_native_fn("Exponential", distributions::create_exponential_dist);
+    module.set_native_fn("Binomial", distributions::create_binomial_dist);
+    module.set_native_fn("Log", distributions::create_log_dist);
+    module.set_native_fn("Sawtooth", generate::create_st_dist);
+    module.set_native_fn("Periodic", generate::create_periodic_dist);
+    module.set_native_fn("Sinusoidal", generate::create_sinus_dist);
+    module.set_native_fn("Square", generate::create_square_dist);
+    module.set_native_fn("Triangle", generate::create_triangle_dist);
     engine.register_static_module("sampler", module.into());
 
 
