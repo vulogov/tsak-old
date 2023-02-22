@@ -7,6 +7,7 @@ use std::collections::VecDeque;
 
 mod eq;
 mod zip;
+mod construct;
 mod smooth;
 mod normalize;
 mod generate;
@@ -153,6 +154,7 @@ pub fn init(engine: &mut Engine) {
     let mut module = exported_module!(sampler_module);
     module.set_native_fn("make_normal", distributions::create_normal_normalized_dist);
     module.set_native_fn("zip", zip::sampler_zip);
+    module.set_native_fn("Sampler", construct::sampler_construct);
     module.set_native_fn("Normal", distributions::create_normal_dist);
     module.set_native_fn("Uniform", distributions::create_uniform_normalized_dist);
     module.set_native_fn("Uniform", distributions::create_uniform_dist);
