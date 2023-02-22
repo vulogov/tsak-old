@@ -1,7 +1,7 @@
 extern crate log;
-use rhai::{Engine, Map};
+use rhai::{Engine, Map, EvalAltResult};
 
-use crate::stdlib::nrql::nrql_module::{query};
+use crate::stdlib::nrql::{query};
 use crate::stdlib::nr::graphql::nrql::{nrql_query};
 use crate::stdlib::nr::graphql::result_type::{NRResult};
 
@@ -28,7 +28,7 @@ impl NRQL {
         res.key = key;
         res
     }
-    fn query_map(&mut self, q: String) -> Map {
+    fn query_map(&mut self, q: String) -> Result<Map, Box<EvalAltResult>> {
         query(self.uri.clone(), self.account.clone(), self.key.clone(), q)
     }
     fn query_str(&mut self, q: String) -> String {
