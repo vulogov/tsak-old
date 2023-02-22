@@ -11,7 +11,7 @@ flate2 = "1.0.24"
 fsio = "0.4.0"
 hostname = "^0.3"
 howlong = "0.1.7"
-lexical-core = "0.8.5"
+lexical-core = { version = "0.8.*", features = ["parse-floats"] }
 log = "0.4.17"
 neofiglet = "0.1.1"
 new_string_template = "1.4.0"
@@ -33,7 +33,7 @@ logwatcher = "0.1.1"
 lazy_static = "1.4.0"
 futures = { version = "0.3.*" }
 tokio = {version = "1.21.*", features = ["full", "time"] }
-maver = "0.1.0"
+maver = "0.1.*"
 fakeit = "1.1.1"
 csv = "1.1"
 serde = { version = "1", features = ["derive"] }
@@ -51,6 +51,11 @@ fuzzy-matcher = "0.3.7"
 distance = "0.4.0"
 charabia = "0.7.0"
 reachable = "0.2.2"
+ndarray = "0.15.6"
+compute = "0.2.3"
+ta = "0.5.0"
+statrs = "0.16.*"
+rand = "0.8.*"
 
 
 [dependencies.rhai]
