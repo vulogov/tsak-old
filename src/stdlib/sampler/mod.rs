@@ -6,6 +6,7 @@ use lexical_core;
 use std::collections::VecDeque;
 
 mod eq;
+mod zip;
 mod smooth;
 mod normalize;
 mod generate;
@@ -64,6 +65,13 @@ impl Sampler {
             res.push(Dynamic::from(v.clone()));
         }
         Dynamic::from(res)
+    }
+    pub fn raw(self: &mut Sampler) -> Vec<f64> {
+        let mut res: Vec<f64> = Vec::new();
+        for v in &self.d {
+            res.push(v.clone());
+        }
+        res
     }
     fn try_downsample(self: &mut Sampler) -> VecDeque<f64> {
         let mut res: VecDeque<f64> = VecDeque::new();
@@ -144,6 +152,7 @@ pub fn init(engine: &mut Engine) {
 
     let mut module = exported_module!(sampler_module);
     module.set_native_fn("make_normal", distributions::create_normal_normalized_dist);
+    module.set_native_fn("zip", zip::sampler_zip);
     module.set_native_fn("Normal", distributions::create_normal_dist);
     module.set_native_fn("Uniform", distributions::create_uniform_normalized_dist);
     module.set_native_fn("Uniform", distributions::create_uniform_dist);
