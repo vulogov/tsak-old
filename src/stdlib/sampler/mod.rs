@@ -11,6 +11,7 @@ mod construct;
 mod smooth;
 mod normalize;
 mod generate;
+mod harmonic;
 mod distributions;
 
 #[derive(Debug, Clone)]
@@ -149,6 +150,7 @@ pub fn init(engine: &mut Engine) {
           .register_fn("cdr", Sampler::cdr)
           .register_fn("equal", Sampler::equal)
           .register_fn("equal", Sampler::try_equal)
+          .register_fn("harmonic", Sampler::harmonic)
           .register_fn("to_string", |x: &mut Sampler| format!("{:?}", x.d) );
 
     let mut module = exported_module!(sampler_module);
