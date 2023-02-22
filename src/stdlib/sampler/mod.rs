@@ -5,6 +5,7 @@ use rhai::plugin::*;
 use lexical_core;
 use std::collections::VecDeque;
 
+mod eq;
 mod smooth;
 mod normalize;
 mod generate;
@@ -137,6 +138,8 @@ pub fn init(engine: &mut Engine) {
           .register_fn("normalize", Sampler::normalize)
           .register_fn("car", Sampler::car)
           .register_fn("cdr", Sampler::cdr)
+          .register_fn("equal", Sampler::equal)
+          .register_fn("equal", Sampler::try_equal)
           .register_fn("to_string", |x: &mut Sampler| format!("{:?}", x.d) );
 
     let mut module = exported_module!(sampler_module);
