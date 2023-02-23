@@ -1,10 +1,12 @@
 extern crate log;
 use rhai::{Engine, Module};
 use lingua::{LanguageDetector, LanguageDetectorBuilder};
+
 use lazy_static::lazy_static;
 use std::sync::Mutex;
 
 mod detect;
+mod language_confidence;
 
 lazy_static! {
     static ref LANG_DETECTOR: Mutex<NRLanguage> = {
@@ -40,5 +42,6 @@ pub fn init(engine: &mut Engine) {
 
     let mut module = Module::new();
     module.set_native_fn("detect", detect::detect_language);
+    module.set_native_fn("detect_confidence_values", language_confidence::detect_confidence);
     engine.register_static_module("linguistic", module.into());
 }
