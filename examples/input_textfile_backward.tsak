@@ -1,0 +1,6 @@
+fn echo(line) {
+  return line;
+}
+
+let res = input::textfile::backward("/etc/passwd", echo);
+print(res);

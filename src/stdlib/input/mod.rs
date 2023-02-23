@@ -10,6 +10,7 @@ pub mod snmp;
 pub mod prometheus;
 pub mod zabbix;
 pub mod ssh;
+pub mod textfile;
 
 
 
@@ -52,5 +53,11 @@ pub fn init(engine: &mut Engine) {
 
     let mut module = exported_module!(input_module);
     module.set_native_fn("watch", watch::file_watch);
+
+    let mut textfile_module = Module::new();
+    textfile_module.set_native_fn("forward", textfile::textfile_forward);
+    textfile_module.set_native_fn("backward", textfile::textfile_backward);
+    module.set_sub_module("textfile", textfile_module);
+
     engine.register_static_module("input", module.into());
 }
