@@ -1,5 +1,5 @@
 fn echo(line) {
-  return line;
+  return str::trim(line);
 }
 
 let res = input::textfile::backward("/etc/passwd", echo);

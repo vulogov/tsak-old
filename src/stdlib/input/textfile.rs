@@ -16,7 +16,10 @@ pub fn textfile_forward(context: NativeCallContext, fname: String, f: FnPtr) -> 
                             Ok(Some(line)) => {
                                 match f.call_within_context(&context, (line,)) {
                                     Ok(r) => res.push(r),
-                                    Err(err) => return Err(format!("input::textfile::* : {}", err).into()),
+                                    Err(err) => {
+                                        log::debug!("input::textfile::* function returned error: {}", err);
+                                        continue;
+                                    }
                                 }
                             }
                             Ok(None) => break,
@@ -45,7 +48,10 @@ pub fn textfile_backward(context: NativeCallContext, fname: String, f: FnPtr) ->
                             Ok(Some(line)) => {
                                 match f.call_within_context(&context, (line,)) {
                                     Ok(r) => res.push(r),
-                                    Err(err) => return Err(format!("input::textfile::* : {}", err).into()),
+                                    Err(err) => {
+                                        log::debug!("input::textfile::* function returned error: {}", err);
+                                        continue;
+                                    }
                                 }
                             }
                             Ok(None) => break,
