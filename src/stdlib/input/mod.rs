@@ -12,6 +12,7 @@ pub mod zabbix;
 pub mod ssh;
 
 
+
 #[export_module]
 pub mod input_module {
     pub fn stdin() -> String {
@@ -48,6 +49,7 @@ pub mod input_module {
 
 pub fn init(engine: &mut Engine) {
     log::trace!("Running STDLIB::input init");
+
     let mut module = exported_module!(input_module);
     module.set_native_fn("watch", watch::file_watch);
     engine.register_static_module("input", module.into());

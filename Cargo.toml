@@ -59,6 +59,9 @@ rand = "0.8.*"
 hyphenation = { version = "0.8.*", features = [] }
 textwrap = { version = "0.16.*", features = ["smawk"] }
 lingua = "1.4.*"
+easy_reader = "0.5.*"
+wikipedia = "0.3.4"
+hyper = "0.14.24"
 
 
 [dependencies.rhai]

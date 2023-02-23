@@ -5,6 +5,8 @@ use crate::tsak_lib::io::get_file;
 use urlencoding::encode;
 use serde_json::{from_str};
 
+mod wiki;
+
 #[export_module]
 pub mod internetsearch_module {
     pub fn ddg(s: String) -> Dynamic {
@@ -26,7 +28,12 @@ pub mod internetsearch_module {
 
 pub fn init(engine: &mut Engine) {
     log::trace!("Running STDLIB::internetsearch init");
-    let module = exported_module!(internetsearch_module);
+    let mut module = exported_module!(internetsearch_module);
+
+    let mut wikipedia_module = Module::new();
+    wikipedia_module.set_native_fn("search", wiki::wiki_search);
+    wikipedia_module.set_native_fn("page", wiki::wiki_page);
+    module.set_sub_module("wikipedia", wikipedia_module);
 
     engine.register_static_module("internetsearch", module.into());
 
