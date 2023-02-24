@@ -11,6 +11,7 @@ pub mod prometheus;
 pub mod zabbix;
 pub mod ssh;
 pub mod textfile;
+pub mod binfile;
 
 
 
@@ -58,6 +59,11 @@ pub fn init(engine: &mut Engine) {
     textfile_module.set_native_fn("forward", textfile::textfile_forward);
     textfile_module.set_native_fn("backward", textfile::textfile_backward);
     module.set_sub_module("textfile", textfile_module);
+
+    let mut binfile_module = Module::new();
+    binfile_module.set_native_fn("read", binfile::binfile_read);
+    binfile_module.set_native_fn("zip", binfile::binfile_forward);
+    module.set_sub_module("binfile", binfile_module);
 
     engine.register_static_module("input", module.into());
 }

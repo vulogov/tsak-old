@@ -1,0 +1,6 @@
+fn into_string(buf) {
+  return buf.as_string();
+}
+
+let res = input::binfile::zip("/etc/passwd", 16, into_string);
+print(res);

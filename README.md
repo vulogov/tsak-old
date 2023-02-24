@@ -26,7 +26,7 @@ event.send(NR_EVENT, NR_ACCOUNT, NR_INSERT_KEY);
 
 First, you've created an instance of Event(), then you set some event attributes and with event.send() you are sending prepared event to New Relic
 
-## SHow me something cool
+## Show me something cool
 
 How about having Neural Network suitable for telemetry data analysis availabled as a part of standard library ?
 
