@@ -73,6 +73,10 @@ pub fn init(engine: &mut Engine) {
     dist_module.set_native_fn("exp", distributions::exp_distribution_gen);
     dist_module.set_native_fn("lognormal", distributions::lognormal_distribution_gen);
     dist_module.set_native_fn("sawtooth", distributions::sawtooth_gen);
+    dist_module.set_native_fn("periodic", distributions::periodic_gen);
+    dist_module.set_native_fn("sinusoidal", distributions::sinusoidal_gen);
+    dist_module.set_native_fn("square", distributions::square_gen);
+    dist_module.set_native_fn("triangle", distributions::triangle_gen);
     module.set_sub_module("distribution", dist_module);
 
     engine.register_static_module("input", module.into());

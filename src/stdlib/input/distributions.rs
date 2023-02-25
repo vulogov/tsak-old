@@ -3,7 +3,7 @@ extern crate log;
 use rhai::{Dynamic, FnPtr, NativeCallContext, EvalAltResult};
 use rand::distributions::{Distribution, Uniform};
 use statrs::distribution::{Normal, Binomial, Exp, LogNormal};
-use statrs::generate::{InfiniteSawtooth};
+use statrs::generate::{InfiniteSawtooth, InfinitePeriodic, InfiniteSinusoidal, InfiniteSquare, InfiniteTriangle};
 use crate::stdlib::system::system_module::{sleep_millisecond};
 
 pub fn norm_distribution_gen(context: NativeCallContext, m: f64, dev: f64, f: FnPtr, delay: i64) -> Result<(), Box<EvalAltResult>>{
@@ -99,6 +99,90 @@ pub fn uniform_distribution_gen(context: NativeCallContext, l: f64, u: f64, f: F
 pub fn sawtooth_gen(context: NativeCallContext, p: i64, l: f64, h: f64, d: i64, f: FnPtr, delay: i64) -> Result<(), Box<EvalAltResult>>{
 
     let mut n = InfiniteSawtooth::new(p, h, l, d);
+    loop {
+        match n.next() {
+            Some(val) => {
+                let r: Result<(), Box<EvalAltResult>> = f.call_within_context(&context, (Dynamic::from_float(val),));
+                match r {
+                    Ok(_) => sleep_millisecond(delay),
+                    Err(err) => {
+                        log::debug!("distribution generator cb returned: {}", err);
+                        break;
+                    }
+                }
+            }
+            _ => break,
+        }
+    }
+    Result::Ok(())
+}
+
+pub fn periodic_gen(context: NativeCallContext, rate: f64, freq: f64, a: f64, p: f64, d: i64, f: FnPtr, delay: i64) -> Result<(), Box<EvalAltResult>>{
+
+    let mut n = InfinitePeriodic::new(rate, freq, a, p, d);
+    loop {
+        match n.next() {
+            Some(val) => {
+                let r: Result<(), Box<EvalAltResult>> = f.call_within_context(&context, (Dynamic::from_float(val),));
+                match r {
+                    Ok(_) => sleep_millisecond(delay),
+                    Err(err) => {
+                        log::debug!("distribution generator cb returned: {}", err);
+                        break;
+                    }
+                }
+            }
+            _ => break,
+        }
+    }
+    Result::Ok(())
+}
+
+pub fn sinusoidal_gen(context: NativeCallContext, rate: f64, freq: f64, a: f64, m: f64, p: f64, d: i64, f: FnPtr, delay: i64) -> Result<(), Box<EvalAltResult>>{
+
+    let mut n = InfiniteSinusoidal::new(rate, freq, a, m, p, d);
+    loop {
+        match n.next() {
+            Some(val) => {
+                let r: Result<(), Box<EvalAltResult>> = f.call_within_context(&context, (Dynamic::from_float(val),));
+                match r {
+                    Ok(_) => sleep_millisecond(delay),
+                    Err(err) => {
+                        log::debug!("distribution generator cb returned: {}", err);
+                        break;
+                    }
+                }
+            }
+            _ => break,
+        }
+    }
+    Result::Ok(())
+}
+
+pub fn square_gen(context: NativeCallContext, hd: i64, ld: i64, hv: f64, lv: f64, d: i64, f: FnPtr, delay: i64) -> Result<(), Box<EvalAltResult>>{
+
+    let mut n = InfiniteSquare::new(hd, ld, hv, lv, d);
+    loop {
+        match n.next() {
+            Some(val) => {
+                let r: Result<(), Box<EvalAltResult>> = f.call_within_context(&context, (Dynamic::from_float(val),));
+                match r {
+                    Ok(_) => sleep_millisecond(delay),
+                    Err(err) => {
+                        log::debug!("distribution generator cb returned: {}", err);
+                        break;
+                    }
+                }
+            }
+            _ => break,
+        }
+    }
+    Result::Ok(())
+}
+
+pub fn triangle_gen(context: NativeCallContext, rd: i64, fd: i64, lv: f64, hv: f64, d: i64, f: FnPtr, delay: i64) -> Result<(), Box<EvalAltResult>>{
+
+    let mut n = InfiniteTriangle::new(rd, fd, hv, lv, d);
     loop {
         match n.next() {
             Some(val) => {
