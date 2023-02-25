@@ -12,6 +12,7 @@ pub mod zabbix;
 pub mod ssh;
 pub mod textfile;
 pub mod binfile;
+pub mod distributions;
 
 
 
@@ -64,6 +65,15 @@ pub fn init(engine: &mut Engine) {
     binfile_module.set_native_fn("read", binfile::binfile_read);
     binfile_module.set_native_fn("zip", binfile::binfile_forward);
     module.set_sub_module("binfile", binfile_module);
+
+    let mut dist_module = Module::new();
+    dist_module.set_native_fn("normal", distributions::norm_distribution_gen);
+    dist_module.set_native_fn("uniform", distributions::uniform_distribution_gen);
+    dist_module.set_native_fn("binomial", distributions::binomial_distribution_gen);
+    dist_module.set_native_fn("exp", distributions::exp_distribution_gen);
+    dist_module.set_native_fn("lognormal", distributions::lognormal_distribution_gen);
+    dist_module.set_native_fn("sawtooth", distributions::sawtooth_gen);
+    module.set_sub_module("distribution", dist_module);
 
     engine.register_static_module("input", module.into());
 }
