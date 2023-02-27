@@ -1,5 +1,5 @@
 //
-// Unline Metric, Security API in TSAK standard library is not
+// Unlike Metric, Security API in TSAK standard library is not
 // finalized yes, and this example will show how you can create
 // a security finding and send it to a New Relic vulnerability API
 //

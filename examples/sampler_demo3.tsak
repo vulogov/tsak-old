@@ -1,0 +1,38 @@
+loop {
+  // To demonstrate statistical computation capabilities of TSAK
+  // we will generate 128 uniformly spaced samples
+  // In real environment, we can use this approach as a precomputed  aggregation
+  // of telemetry sampling
+  let original = sampler::Uniform(0.0, 10.0);
+  // And then generate a smoothed version of original sample.
+  // In this example, I am using a Simple Moving Average smoothing algorithm
+  // other algorithm available is Exponential Moving Average
+  let smoothed = original.smooth();
+  // And with help of methid .get() we will extract array of raw data
+  // from Sampler() object.
+  let orig_raw = original.get();
+  let smooth_raw = smoothed.get();
+  // Then we create an Event() object
+  let event = Event();
+  // and fill event attributes with calculated values beginning with mean
+  event["instanceId"] = INSTANCE;
+  event["orig_mean"] = mean(orig_raw);
+  event["smoothed_mean"] = mean(smooth_raw);
+  // Then min/max
+  event["orig_min"] = min(orig_raw);
+  event["smoothed_min"] = min(smooth_raw);
+  event["orig_max"] = max(orig_raw);
+  event["smoothed_max"] = max(smooth_raw);
+  // Let's calculate variances for original and smoothed sample
+  event["orig_variance"] = variance(orig_raw);
+  event["smoothed_variance"] = variance(smooth_raw);
+  // This sets the attributes with calculated Sandard Deviation
+  event["orig_std"] = std(orig_raw);
+  event["smoothed_std"] = std(smooth_raw);
+  // And here is Interqartile Range, that is measure of statistical dispersion
+  event["orig_iqr"] = iqr(orig_raw);
+  event["smoothed_iqr"] = iqr(smooth_raw);
+  // And then send pre-computed aggregation as an event to TSAKEvents
+  event.send(NR_EVENT, NR_ACCOUNT, NR_INSERT_KEY);
+  system::sleep(10);
+}

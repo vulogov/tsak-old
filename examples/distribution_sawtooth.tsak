@@ -25,4 +25,4 @@ fn send_data(d) {
 // delay      - 1
 // Calling function send_data() for every sampled value
 // and sampling the distribution every 5000 milliseconds (5 seconds)
-input::distribution::sawtooth(4, 0.0, 1.0, 1, send_data, 5000);
+input::distribution::sawtooth(4, 0.0, 1.0, 1, send_data, 10000);
