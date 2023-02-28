@@ -25,7 +25,7 @@ impl Sampler {
             d: VecDeque::with_capacity(128),
         }
     }
-    fn init() -> Sampler {
+    pub fn init() -> Sampler {
         let mut res = Sampler::new();
         res.zero();
         res
@@ -35,7 +35,7 @@ impl Sampler {
             self.try_set(0.0 as f64);
         }
     }
-    fn try_set(self: &mut Sampler, v: f64) {
+    pub fn try_set(self: &mut Sampler, v: f64) {
         if self.d.len() == self.d.capacity() {
             let _ = self.d.pop_front();
         }

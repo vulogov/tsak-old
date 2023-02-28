@@ -1,0 +1,8 @@
+let data = Data();
+let sample1 = sampler::Triangle(3, 3, 1.0, 0.0, 1);
+let sample2 = sampler::Triangle(2, 2, 1.0, 0.0, 1);
+let sample3 = sampler::Triangle(1, 1, 1.0, 0.0, 1);
+data["host1"] = sample1;
+data["host2"] = sample2;
+data["host3"] = sample3;
+let cross_hosts_sample = data[0];

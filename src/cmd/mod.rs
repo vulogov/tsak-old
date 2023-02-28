@@ -102,6 +102,9 @@ pub struct Cli {
     #[clap(help="Hostname for TSAK", long, default_value_t = String::from(hostname::get().unwrap().into_string().unwrap()))]
     pub hostname: String,
 
+    #[clap(long, action = clap::ArgAction::Count, help="Pre-load languages for linguistic::* functions")]
+    pub lang_preload: u8,
+
     #[clap(subcommand)]
     command: Commands,
 }

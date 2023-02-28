@@ -1,6 +1,6 @@
 [package]
 name = "tsak"
-version = "1.0.1"
+version = "1.0.2"
 edition = "2021"
 
 [dependencies]
@@ -56,6 +56,13 @@ compute = "0.2.3"
 ta = "0.5.0"
 statrs = "0.16.*"
 rand = "0.8.*"
+hyphenation = { version = "0.8.*", features = [] }
+textwrap = { version = "0.16.*", features = ["smawk"] }
+lingua = "1.4.*"
+easy_reader = "0.5.*"
+wikipedia = "0.3.4"
+hyper = "0.14.24"
+binary_rw = "4.0.4"
 
 
 [dependencies.rhai]

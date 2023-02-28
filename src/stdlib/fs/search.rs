@@ -32,7 +32,7 @@ pub fn search_find_zero(_context: NativeCallContext, path: String) -> Result<Vec
     let mut res = Array::new();
     let r: Vec<String> = SearchBuilder::default()
     .location(path)
-    .file_size_smaller(FileSize::Megabyte(0.0))
+    .file_size_equal(FileSize::Megabyte(0.0))
     .build()
     .collect();
     for v in r {

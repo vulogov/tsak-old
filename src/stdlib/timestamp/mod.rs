@@ -6,7 +6,6 @@ use rhai::plugin::*;
 #[export_module]
 pub mod timestamp_module {
 
-
     pub fn timestamp_ms() -> i64 {
     	SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_millis() as i64
     }

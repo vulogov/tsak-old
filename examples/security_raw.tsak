@@ -1,13 +1,21 @@
+//
+// Unlike Metric, Security API in TSAK standard library is not
+// finalized yes, and this example will show how you can create
+// a security finding and send it to a New Relic vulnerability API
+//
 let finding = #{
   source:     "TSAKSecurity",
   title:      "Some security vulnerability",
   message:    "This is TSAK-generated sample vulnerability",
   issueType:  "Library Vulnerability",
-  issueId:    "TSAKSEC-002",
-  severity:   "INFO",
+  issueId:    "TSAKSEC-003",
+  severity:   "HIGH",
   entityType: "Repository",
   entityLookupValue: "host.example.com",
   remediationExists: false,
   detectedAt:  timestamp::timestamp_ms(),
 };
+// After we create a "Dictionary" with key-value data
+// that is defining finding, we are sending it to a
+// NR vulnerability endpoint
 newrelic::security(NR_SEC_API, NR_INSERT_KEY, finding);
