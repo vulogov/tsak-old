@@ -3,10 +3,13 @@ use crate::cmd;
 use crate::lang;
 use crate::tsak_lib::io::get_file;
 
+use crate::cmd::tsak_processors;
+
 pub fn run_exec(c: &cmd::Cli, s: &String, args: &Vec<String>) {
     log::trace!("run_exec() reached");
     let mut engine = lang::LangEngine::init(c);
     engine.set_extra_scope(args);
+    tsak_processors::tsak_processors(c.clone(), &engine);
     log::trace!("Engine established");
     let script = get_file::get_file(s.to_string());
     if script.is_empty() {

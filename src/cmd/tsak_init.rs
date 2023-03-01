@@ -3,9 +3,10 @@ use howlong;
 use crate::cmd;
 #[cfg(feature = "tokio-runtime")]
 use bastion::prelude::*;
-use bastion::Bastion;
+use bastion::{Bastion};
 
 use crate::stdlib::linguistic::languages_preload;
+
 
 pub fn tsak_init(c: cmd::Cli) {
     log::trace!("cmd::tsak_init() reached");
@@ -16,5 +17,6 @@ pub fn tsak_init(c: cmd::Cli) {
         log::debug!("{:?} takes to run script", t.elapsed());
     }
     Bastion::init();
+    log::debug!("{} pre-spawned children requested", &c.proc);
     Bastion::start();
 }

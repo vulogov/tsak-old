@@ -4,6 +4,8 @@ use rhai::plugin::*;
 use rhai::serde::{to_dynamic};
 use serde_json::{to_string, from_str};
 
+mod find;
+
 #[export_module]
 pub mod json_module {
     pub fn dynamic(d: String) -> Dynamic {
@@ -46,7 +48,7 @@ pub mod json_module {
 
 pub fn init(engine: &mut Engine) {
     log::trace!("Running STDLIB::JSON init");
-    let module = exported_module!(json_module);
-
+    let mut module = exported_module!(json_module);
+    module.set_native_fn("find", find::find_in_json);
     engine.register_static_module("json", module.into());
 }
