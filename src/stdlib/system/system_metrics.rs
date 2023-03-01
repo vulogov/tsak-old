@@ -3,10 +3,10 @@ use lazy_static::lazy_static;
 use rhai::{Engine, Map, Array, Dynamic, Identifier};
 use rhai::plugin::*;
 use std::{thread, time};
-use tokio::task;
 // Later add NetworkExt, NetworksExt, ProcessExt,
 use sysinfo::{System, SystemExt, CpuExt};
 use crate::stdlib::nr::metric::metric_type;
+use crate::stdlib::system::system_module::sleep;
 use std::sync::Mutex;
 
 lazy_static! {
@@ -17,12 +17,13 @@ lazy_static! {
     };
 }
 
-async fn update_sysinfo() {
+pub async fn update_sysinfo() {
     log::debug!("Initiated sysinfo update thread");
     loop {
-        thread::sleep(time::Duration::from_secs(5 as u64));
         let mut sys = METRIC_SYS.lock().unwrap();
         sys.refresh_all();
+        drop(sys);
+        sleep(5 as i64);
     }
 }
 
@@ -93,5 +94,4 @@ pub fn init(engine: &mut Engine) {
     log::trace!("Running STDLIB::System functions init");
     let module = exported_module!(metrics_module);
     engine.register_static_module("metrics", module.into());
-    let _ = task::spawn(update_sysinfo());
 }

@@ -1,5 +1,4 @@
 extern crate log;
-use howlong;
 use std::{thread, time, env};
 use rhai::{Dynamic, Module, EvalAltResult};
 use rhai::plugin::*;
@@ -17,14 +16,10 @@ mod system_loop;
 #[export_module]
 pub mod system_module {
     pub fn sleep(s: i64) {
-        let t = howlong::HighResolutionTimer::new();
         thread::sleep(time::Duration::from_secs(s as u64));
-        log::debug!("slept for {:?}", t.elapsed());
     }
     pub fn sleep_millisecond(s: i64) {
-        let t = howlong::HighResolutionTimer::new();
         thread::sleep(time::Duration::from_millis(s as u64));
-        log::debug!("slept for {:?}", t.elapsed());
     }
     pub fn env(n: String) -> String {
         match env::var(&n) {
@@ -141,6 +136,7 @@ pub fn init(engine: &mut LangEngine) {
     internal_module.set_id("internal");
     internal_module.set_native_fn("run", run::str_run);
     internal_module.set_native_fn("run", run::txt_run);
+    internal_module.set_native_fn("background_run", run::str_spawn);
     let mut default_bus = NRBus::init();
     default_bus.s = engine.s.clone();
     default_bus.r = engine.r.clone();

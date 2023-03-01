@@ -3,57 +3,49 @@ use crate::cmd;
 #[cfg(feature = "tokio-runtime")]
 use bastion::prelude::*;
 use bastion::{spawn};
-use rhai::{Map};
-
+use crossbeam_deque::{Worker, Steal};
+use lazy_static::lazy_static;
+use std::sync::Mutex;
 use crate::lang::LangEngine;
-use crate::stdlib::system::NRBus;
-use crossbeam_channel::{Sender, Receiver};
+use crate::stdlib::system::system_module::sleep;
 
-async fn processor_main(c: cmd::Cli, s: Sender<String>, r: Receiver<String>) -> () {
-    log::trace!("cmd::tsak_processors() reached");
-    let mut bus = NRBus::init();
-    bus.s = s;
-    bus.r = r;
+lazy_static! {
+    pub static ref PROCESSOR: Mutex<Worker<String>> = {
+        let e: Mutex<Worker<String>> = Mutex::new(Worker::new_fifo());
+        e
+    };
+}
+
+async fn processor_main(n: u64, c: cmd::Cli) -> () {
+    log::trace!("cmd::tsak_processors({}) reached", &n);
+    let p = PROCESSOR.lock().unwrap();
+    let s = p.stealer();
+    drop(p);
+    let mut engine = LangEngine::child_init(&c.clone());
     loop {
-        match bus.recv() {
-            Ok(msg) => {
-                if msg.is_map() {
-                    let data = msg.cast::<Map>();
-                    if data.contains_key("action") && data.contains_key("value") {
-                        match data.get("action") {
-                            Some(aname) => {
-                                let action_name = aname.clone_cast::<String>();
-                                if action_name == "spawn".to_string() {
-                                    let spawn_r = bus.r.clone();
-                                    let spawn_s = bus.s.clone();
-                                    match data.get("value") {
-                                        Some(code) => {
-                                            let spawn_c = code.clone_cast::<String>();
-                                            let spawn_cli = c.clone();
-                                            spawn!  {
-                                                log::info!("TSAK processor is in spawn");
-                                                let mut engine = LangEngine::init_with_channels(&spawn_cli, spawn_s, spawn_r);
-                                                let _ = engine.run(spawn_c);
-                                            };
-                                        }
-                                        _ => continue,
-                                    }
-                                }
-                            }
-                            _ => continue,
-                        }
+        match s.steal() {
+            Steal::Success(job) => {
+                log::info!("Job picked up at #{}", &n);
+                match engine.run(job) {
+                    Ok(_) => continue,
+                    Err(err) => {
+                        log::error!("Background script retured error: {}", err);
                     }
                 }
             }
-            Err(_) => continue,
+            _ => sleep(1 as i64),
         }
-
     }
 }
 
-pub fn tsak_processors(c: cmd::Cli, e: &LangEngine) {
+pub fn tsak_processors(c: cmd::Cli, _e: &LangEngine) {
     log::trace!("cmd::tsak_processors() reached");
-    let _ = spawn! {
-        processor_main(c.clone(), e.s.clone(), e.r.clone())
-    };
+    let p = PROCESSOR.lock().unwrap();
+    drop(p);
+    log::debug!("{} pre-spawned children requested", &c.proc);
+    for n in 0..c.proc {
+        let _ = spawn! {
+            processor_main(n.into(), c.clone())
+        };
+    }
 }
