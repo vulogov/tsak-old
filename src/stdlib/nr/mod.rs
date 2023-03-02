@@ -7,6 +7,8 @@ use flate2::Compression;
 use rhai::{Engine, Map, Scope, format_map_as_json};
 use rhai::plugin::*;
 
+use crate::stdlib::bus::queue::{try_queue_is_empty};
+
 pub mod graphql;
 pub mod event;
 pub mod metric;
@@ -59,9 +61,6 @@ pub mod nr_module {
         pub fn event_map(p: Map) -> bool {
             event::event_pipe::queue_map_payload_to_events(p)
         }
-        pub fn wait_for_events() {
-            event::event_pipe::wait_events_for_complete();
-        }
         #[rhai_fn(name="metric")]
         pub fn metric_str(p: String) -> bool {
             metric::metric_pipe::queue_json_payload_to_metrics(p)
@@ -71,7 +70,45 @@ pub mod nr_module {
             metric::metric_pipe::queue_map_payload_to_metrics(p)
         }
         pub fn wait_for_metrics() {
-            metric::metric_pipe::wait_metrics_for_complete();
+            loop {
+                match try_queue_is_empty("metrics".to_string()) {
+                    Ok(res) => {
+                        if res {
+                            return;
+                        }
+                    }
+                    Err(_) => continue,
+                }
+            }
+        }
+        pub fn wait_for_events() {
+            loop {
+                match try_queue_is_empty("events".to_string()) {
+                    Ok(res) => {
+                        if res {
+                            return;
+                        }
+                    }
+                    Err(_) => continue,
+                }
+            }
+        }
+        pub fn wait_for_logs() {
+            loop {
+                match try_queue_is_empty("logs".to_string()) {
+                    Ok(res) => {
+                        if res {
+                            return;
+                        }
+                    }
+                    Err(_) => continue,
+                }
+            }
+        }
+        pub fn wait_for() {
+            wait_for_metrics();
+            wait_for_events();
+            wait_for_logs();
         }
     }
 }

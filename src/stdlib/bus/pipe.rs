@@ -11,7 +11,11 @@ pub fn pipes_init() {
     drop(q);
 }
 
-pub fn pipe_push(_context: NativeCallContext, k: String, d: Dynamic) -> Result<(), Box<EvalAltResult>> {
+pub fn pipe_push(_context: NativeCallContext, k: String, d: Dynamic) -> Result<bool, Box<EvalAltResult>> {
+    try_pipe_push(k,d)
+}
+
+pub fn try_pipe_push(k: String, d: Dynamic) -> Result<bool, Box<EvalAltResult>> {
     match to_string(&d) {
         Ok(res) => {
             let mut q = PIPES.lock().unwrap();
@@ -43,7 +47,7 @@ pub fn pipe_push(_context: NativeCallContext, k: String, d: Dynamic) -> Result<(
             return Err(msg.into())
         }
     }
-    Result::Ok(())
+    Result::Ok(true)
 }
 
 pub fn pipe_pull(_context: NativeCallContext, k: String) -> Result<Dynamic, Box<EvalAltResult>> {

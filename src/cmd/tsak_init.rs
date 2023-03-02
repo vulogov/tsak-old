@@ -9,6 +9,7 @@ use crate::stdlib::linguistic::languages_preload;
 use crate::stdlib::bus::queue::queue_init;
 use crate::stdlib::bus::pipe::pipes_init;
 use crate::stdlib::system::system_metrics::update_sysinfo;
+use crate::cmd::tsak_queue_processors;
 
 
 pub fn tsak_init(c: cmd::Cli) {
@@ -26,5 +27,25 @@ pub fn tsak_init(c: cmd::Cli) {
     log::debug!("Launching TSAK default background threads");
     let _ = spawn! {
         update_sysinfo().await;
+    };
+    let spawn_c = c.clone();
+    let _ = spawn! {
+        tsak_queue_processors::event_processor_main(spawn_c).await;
+    };
+    let spawn_c = c.clone();
+    let _ = spawn! {
+        tsak_queue_processors::metric_processor_main(spawn_c).await;
+    };
+    let spawn_c = c.clone();
+    let _ = spawn! {
+        tsak_queue_processors::log_processor_main(spawn_c).await;
+    };
+    let spawn_c = c.clone();
+    let _ = spawn! {
+        tsak_queue_processors::vulnerability_processor_main(spawn_c).await;
+    };
+    let spawn_c = c.clone();
+    let _ = spawn! {
+        tsak_queue_processors::zabbix_out_processor_main(spawn_c).await;
     };
 }

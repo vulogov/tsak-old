@@ -20,6 +20,7 @@ mod tsak_spawn;
 mod tsak_init;
 mod tsak_fin;
 pub mod tsak_processors;
+pub mod tsak_queue_processors;
 
 
 pub fn init() {

@@ -1,5 +1,5 @@
 extern crate log;
-use rhai::{Dynamic, NativeCallContext, EvalAltResult};
+use rhai::{Dynamic, Map, NativeCallContext, EvalAltResult};
 use crossbeam_deque::{Worker, Steal};
 use serde_json::{to_string, from_str};
 use crate::stdlib::bus::QUEUES;
@@ -15,7 +15,42 @@ pub fn queue_init() {
     drop(q);
 }
 
-pub fn queue_push(_context: NativeCallContext, k: String, d: Dynamic) -> Result<(), Box<EvalAltResult>> {
+pub fn queue_read_payloads(k: String, n: usize) -> Vec<Map> {
+    let mut res: Vec<Map> = Vec::new();
+    let mut q = QUEUES.lock().unwrap();
+    if ! q.contains_key(&k) {
+        drop(q);
+        return res;
+    }
+    let w = q.get_mut(&k).unwrap();
+    let s = w.stealer();
+    drop(q);
+    let mut c = 0;
+    for _ in 0..n {
+        if s.is_empty() {
+            break;
+        }
+        match s.steal() {
+            Steal::Success(val) => {
+                match from_str::<Map>(&val) {
+                    Ok(jval) => res.push(jval),
+                    Err(_) => { c += 1; },
+                }
+            }
+            _ => { c += 1; },
+        }
+    }
+    if c > 0 {
+        log::error!("{} errors in JSON payload acquisition in {}", c, &k);
+    }
+    res
+}
+
+pub fn queue_push(_context: NativeCallContext, k: String, d: Dynamic) -> Result<bool, Box<EvalAltResult>> {
+    try_queue_push(k, d)
+}
+
+pub fn try_queue_push(k: String, d: Dynamic) -> Result<bool, Box<EvalAltResult>> {
     match to_string(&d) {
         Ok(res) => {
             let mut q = QUEUES.lock().unwrap();
@@ -36,10 +71,14 @@ pub fn queue_push(_context: NativeCallContext, k: String, d: Dynamic) -> Result<
             return Err(msg.into())
         }
     }
-    Result::Ok(())
+    Result::Ok(true)
 }
 
 pub fn queue_pull(_context: NativeCallContext, k: String) -> Result<Dynamic, Box<EvalAltResult>> {
+    try_queue_pull(k)
+}
+
+pub fn try_queue_pull(k: String) -> Result<Dynamic, Box<EvalAltResult>> {
     let mut q = QUEUES.lock().unwrap();
     if ! q.contains_key(&k) {
         drop(q);
@@ -67,6 +106,10 @@ pub fn queue_pull(_context: NativeCallContext, k: String) -> Result<Dynamic, Box
 }
 
 pub fn queue_is_empty(_context: NativeCallContext, k: String) -> Result<bool, Box<EvalAltResult>> {
+    try_queue_is_empty(k)
+}
+
+pub fn try_queue_is_empty(k: String) -> Result<bool, Box<EvalAltResult>> {
     let mut q = QUEUES.lock().unwrap();
     if ! q.contains_key(&k) {
         drop(q);
