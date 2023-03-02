@@ -37,8 +37,7 @@ pub mod nr_module {
         return res;
     }
     pub fn log(url: &str, key: &str, nr_log: Map) -> bool {
-        let payload = format!("{}", format_map_as_json(&nr_log));
-        log::debug!("Payload: {}", &payload);
+        let payload = format!("[{}]", format_map_as_json(&nr_log));
         let t = howlong::HighResolutionTimer::new();
         let res = nrlog::raw::send_log_payload(&url.to_string(), &key.to_string(), &payload);
         log::debug!("{:?} takes to send log", t.elapsed());
@@ -64,6 +63,13 @@ pub mod nr_module {
         #[rhai_fn(name="metric")]
         pub fn metric_map(p: Map) -> bool {
             match try_queue_push("metrics".to_string(), Dynamic::from(p)) {
+                Ok(res) => res,
+                Err(_) => false,
+            }
+        }
+        #[rhai_fn(name="log")]
+        pub fn log_map(p: Map) -> bool {
+            match try_queue_push("logs".to_string(), Dynamic::from(p)) {
                 Ok(res) => res,
                 Err(_) => false,
             }
