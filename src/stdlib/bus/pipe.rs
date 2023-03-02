@@ -4,6 +4,13 @@ use crossbeam_channel::{unbounded};
 use serde_json::{to_string, from_str};
 use crate::stdlib::bus::PIPES;
 
+pub fn pipes_init() {
+    log::debug!("Initializing default pipes");
+    let mut q = PIPES.lock().unwrap();
+    q.insert("bus".to_string(), unbounded::<String>());
+    drop(q);
+}
+
 pub fn pipe_push(_context: NativeCallContext, k: String, d: Dynamic) -> Result<(), Box<EvalAltResult>> {
     match to_string(&d) {
         Ok(res) => {

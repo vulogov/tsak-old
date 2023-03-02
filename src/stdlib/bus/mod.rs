@@ -7,8 +7,8 @@ use std::collections::btree_map::BTreeMap;
 use lazy_static::lazy_static;
 use std::sync::Mutex;
 
-mod queue;
-mod pipe;
+pub mod queue;
+pub mod pipe;
 
 lazy_static! {
     static ref QUEUES: Mutex<BTreeMap<String,Worker<String>>> = {
