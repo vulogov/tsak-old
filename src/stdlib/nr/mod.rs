@@ -136,11 +136,8 @@ pub fn init(engine: &mut Engine, scope: &mut Scope) {
     module.set_var("INSTANCE", scope.get_value::<String>("INSTANCE").unwrap());
     engine.register_static_module("newrelic", module.into());
     event::event_type::init(engine);
-    event::event_pipe::init(engine, scope);
     metric::metric_type::init(engine);
     security::security_type::init(engine);
-    metric::metric_pipe::init(engine, scope);
-    security::security_pipe::init(engine, scope);
     nrlog::log_type::init(engine);
     graphql::nrql_type::init(engine);
     graphql::result_type::init(engine);

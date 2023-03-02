@@ -54,22 +54,6 @@ impl LangEngine<'_> {
         e.elapsed("Init finished");
         e
     }
-    pub fn child_init(c: &Cli) -> LangEngine<'static> {
-        let mut e = LangEngine::new();
-        e.name = c.name.clone();
-        if c.debug > 0 {
-            log::debug!("Debug is enabled");
-            e.is_debug = true;
-        }
-        e.engine.register_global_module(RandomPackage::new().as_shared_module());
-        e.engine.register_global_module(SciPackage::new().as_shared_module());
-        e.set_default_scope();
-        e.set_channels_to_scope();
-        e.set_cli_scope(&c);
-        stdlib::child_initlib(&mut e, c);
-        e.elapsed("Init finished");
-        e
-    }
     pub fn init_with_channels(c: &Cli, s: Sender<String>, r: Receiver<String>) -> LangEngine<'static> {
         let mut e = LangEngine::new();
         e.name = c.name.clone();

@@ -21,7 +21,7 @@ async fn processor_main(n: u64, c: cmd::Cli) -> () {
     let p = PROCESSOR.lock().unwrap();
     let s = p.stealer();
     drop(p);
-    let mut engine = LangEngine::child_init(&c.clone());
+    let mut engine = LangEngine::init(&c.clone());
     loop {
         match s.steal() {
             Steal::Success(job) => {
