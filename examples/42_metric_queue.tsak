@@ -1,5 +1,4 @@
 let metric = Metric("answer", 42);
 metric["instanceId"] = INSTANCE;
-print(metric.raw());
 newrelic::queue::metric(metric.raw());
 newrelic::queue::wait_for_metrics();
