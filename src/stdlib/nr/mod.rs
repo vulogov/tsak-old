@@ -7,7 +7,8 @@ use flate2::Compression;
 use rhai::{Engine, Map, Scope, format_map_as_json};
 use rhai::plugin::*;
 
-use crate::stdlib::bus::queue::{try_queue_is_empty};
+use crate::stdlib::bus::queue::{try_queue_is_empty, try_queue_push};
+use crate::stdlib::system::system_module::{sleep_millisecond};
 
 pub mod graphql;
 pub mod event;
@@ -54,23 +55,23 @@ pub mod nr_module {
 
     pub mod queue {
         #[rhai_fn(name="event")]
-        pub fn event_str(p: String) -> bool {
-            event::event_pipe::queue_json_payload_to_events(p)
-        }
-        #[rhai_fn(name="event")]
-        pub fn event_map(p: Map) -> bool {
-            event::event_pipe::queue_map_payload_to_events(p)
-        }
-        #[rhai_fn(name="metric")]
-        pub fn metric_str(p: String) -> bool {
-            metric::metric_pipe::queue_json_payload_to_metrics(p)
+        pub fn event_map(p: Map) -> bool  {
+            match try_queue_push("events".to_string(), Dynamic::from(p)) {
+                Ok(res) => res,
+                Err(_) => false,
+            }
         }
         #[rhai_fn(name="metric")]
         pub fn metric_map(p: Map) -> bool {
-            metric::metric_pipe::queue_map_payload_to_metrics(p)
+            match try_queue_push("metrics".to_string(), Dynamic::from(p)) {
+                Ok(res) => res,
+                Err(_) => false,
+            }
         }
         pub fn wait_for_metrics() {
             loop {
+                log::trace!("Flushing metrics queue");
+                sleep_millisecond(500);
                 match try_queue_is_empty("metrics".to_string()) {
                     Ok(res) => {
                         if res {
@@ -83,6 +84,8 @@ pub mod nr_module {
         }
         pub fn wait_for_events() {
             loop {
+                log::trace!("Flushing events queue");
+                sleep_millisecond(500);
                 match try_queue_is_empty("events".to_string()) {
                     Ok(res) => {
                         if res {
@@ -95,6 +98,8 @@ pub mod nr_module {
         }
         pub fn wait_for_logs() {
             loop {
+                log::trace!("Flushing logs queue");
+                sleep_millisecond(500);
                 match try_queue_is_empty("logs".to_string()) {
                     Ok(res) => {
                         if res {
@@ -109,6 +114,7 @@ pub mod nr_module {
             wait_for_metrics();
             wait_for_events();
             wait_for_logs();
+            log::debug!("All New Relic queues was flushed");
         }
     }
 }

@@ -4,17 +4,26 @@ use crate::cmd;
 use bastion::prelude::*;
 use crate::stdlib::system::system_module::{sleep,sleep_millisecond};
 use crate::stdlib::bus::queue::queue_read_payloads;
+use serde_json::{to_string};
+use crate::stdlib::nr::event::raw::{send_event_payload};
 
 
-
-pub async fn event_processor_main(_c: cmd::Cli) -> () {
+pub async fn event_processor_main(c: cmd::Cli) -> () {
     log::trace!("event processor reached");
 
     loop {
-        sleep_millisecond(500 as i64);
-        let data = queue_read_payloads("event".to_string(), 50);
+        sleep_millisecond(1000 as i64);
+        let data = queue_read_payloads("events".to_string(), 50);
         if data.len() > 0 {
-            println!("{:?}", &data);
+            match to_string(&data) {
+               Ok(payload) => {
+                   log::debug!("Sending {} events, {} bytes to New Relic", &data.len(), &payload.len());
+                   send_event_payload(&c.nr_event, &c.nr_account, &c.nr_insert_key, &payload);
+               }
+               Err(err) => {
+                   log::error!("Error generating payload: {}", err);
+               }
+           }
         }
 
     }

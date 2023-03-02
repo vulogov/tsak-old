@@ -3,6 +3,7 @@ use crate::cmd;
 use std;
 
 pub fn check_sanity(c: cmd::Cli) {
+    log::debug!("TSAK Instance name is {}", c.name);
     log::trace!("TSAK check_sanity() reached");
     if c.nr_account == "0" {
         log::error!("You did not specified New Relic account");
