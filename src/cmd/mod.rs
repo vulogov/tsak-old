@@ -8,6 +8,7 @@ use crate::stdlib::genid;
 
 pub mod setloglevel;
 pub mod sanity;
+pub mod privilege;
 mod tsak_shell;
 mod tsak_run;
 mod tsak_version;
@@ -27,6 +28,7 @@ pub fn init() {
     log::debug!("Parsing CLI parameters");
     let cli = Cli::parse();
     setloglevel::setloglevel(&cli);
+    privilege::check_privilege(cli.clone());
     sanity::check_sanity(cli.clone());
     tsak_init::tsak_init(cli.clone());
     match &cli.command {
@@ -71,6 +73,9 @@ pub fn init() {
 pub struct Cli {
     #[clap(short, long, action = clap::ArgAction::Count, help="Increase verbosity")]
     pub debug: u8,
+
+    #[clap(long, action = clap::ArgAction::Count, help="Check if TSAK is running with elevated privileges")]
+    pub privilege: u8,
 
     #[clap(long, default_value_t = String::from("insights-collector.newrelic.com"), help="Hostname for Event API")]
     pub nr_event: String,
