@@ -7,8 +7,11 @@ use crossbeam_channel::{unbounded, Sender, Receiver};
 use rhai::serde::{to_dynamic};
 use serde_json::{to_string, from_str};
 
+use sudo;
+
 use crate::lang::{LangEngine};
 pub mod system_metrics;
+
 
 mod run;
 mod system_loop;
@@ -29,6 +32,13 @@ pub mod system_module {
             }
         }
         return "".to_string();
+    }
+    pub fn running_as() -> String {
+        match sudo::check() {
+            sudo::RunningAs::Root => "root".to_string(),
+            sudo::RunningAs::User => "user".to_string(),
+            sudo::RunningAs::Suid => "suid".to_string(),
+        }
     }
 }
 
