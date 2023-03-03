@@ -34,7 +34,7 @@ pub fn init() {
     match &cli.command {
         Commands::Shell(shell) => {
             log::debug!("Interactive shell requested");
-            tsak_shell::run_shell(&cli, &shell.args);
+            tsak_shell::run_shell(&cli, shell.nocolor, &shell.args);
         }
         Commands::Run(run) => {
             log::debug!("Scripts execution requested");
@@ -136,6 +136,9 @@ enum Commands {
 #[derive(Args, Clone, Debug)]
 #[clap(about="Run Interactive shell")]
 struct Shell {
+    #[clap(long, action = clap::ArgAction::Count, help="Disable colors in TSAK shell")]
+    pub nocolor: u8,
+
     #[clap(last = true)]
     args: Vec<String>,
 }

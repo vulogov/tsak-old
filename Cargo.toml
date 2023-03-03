@@ -70,6 +70,8 @@ netscan-service = { version = "0.13.*", features = [  ] }
 netscan-os = { version = "0.13.*", features = [  ] }
 local-ip-address = "0.5.1"
 sudo = "0.6.0"
+qscan = "0.6.0"
+yansi = "0.5.1"
 
 
 
