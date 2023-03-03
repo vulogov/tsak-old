@@ -65,6 +65,11 @@ hyper = "0.14.24"
 binary_rw = "4.0.4"
 crossbeam-deque = "0.8.3"
 expectrl = "0.6.0"
+netscan = { version = "0.13.*", features = [ "full"] }
+netscan-service = { version = "0.13.*", features = [  ] }
+netscan-os = { version = "0.13.*", features = [  ] }
+local-ip-address = "0.5.1"
+
 
 
 [dependencies.rhai]
