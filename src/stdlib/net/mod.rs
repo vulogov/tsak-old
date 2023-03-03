@@ -72,6 +72,7 @@ pub fn init(engine: &mut Engine) {
     let mut scan_module = Module::new();
     scan_module.set_native_fn("host", scan::scan_host);
     scan_module.set_native_fn("fingerprint", scan::fingerprint_host);
+    scan_module.set_native_fn("services", scan::services_host);
     module.set_sub_module("scan", scan_module);
 
     engine.register_static_module("net", module.into());
