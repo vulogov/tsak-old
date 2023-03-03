@@ -12,7 +12,6 @@ impl LangEngine<'_> {
     }
     pub fn set_cli_scope(&mut self, c: &Cli) {
         log::debug!("Setting TSAK shell scope");
-        // Frontends
         self.scope.push("NR_EVENT", c.nr_event.clone());
         self.scope.push("NR_METRIC", c.nr_metric.clone());
         self.scope.push("NR_LOG", c.nr_log.clone());
@@ -26,7 +25,6 @@ impl LangEngine<'_> {
         // And environment
         self.scope.push("HOSTNAME", c.hostname.clone());
         self.scope.push("INSTANCE", c.name.clone());
-
     }
     pub fn set_channels_to_scope(&mut self) {
         log::debug!("Setting TSAK default channels to scope");

@@ -1,0 +1,2 @@
+print(json::find("{\"hello\":\"world\", \"answer\":42}", "$.answer"));
+print(json::find("{\"a\":[1,2,3]}", "$.a"));

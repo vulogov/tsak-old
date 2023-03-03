@@ -6,9 +6,7 @@ use crossbeam_channel::{unbounded, Sender, Receiver};
 use crate::stdlib;
 use crate::cmd::{Cli};
 
-use crate::stdlib::nr::event::event_pipe::{wait_events_for_complete};
-use crate::stdlib::nr::metric::metric_pipe::{wait_metrics_for_complete};
-
+use crate::stdlib::nr::nr_module::queue::{wait_for};
 
 pub mod scope;
 
@@ -96,8 +94,7 @@ impl LangEngine<'_> {
 impl Drop for LangEngine<'_> {
     fn drop(&mut self) {
         log::debug!("Flushing queues");
-        wait_events_for_complete();
-        wait_metrics_for_complete();
+        wait_for();
         log::debug!("{} takes {:?} to execute", self.name, self.timer.elapsed());
         log::debug!("Engine is finished");
     }

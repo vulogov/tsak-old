@@ -1,29 +1,25 @@
 extern crate log;
-use howlong;
 use std::{thread, time, env};
 use rhai::{Dynamic, Module, EvalAltResult};
 use rhai::plugin::*;
 use crossbeam_channel::{unbounded, Sender, Receiver};
 
 use rhai::serde::{to_dynamic};
-use serde_json::{to_string};
+use serde_json::{to_string, from_str};
 
 use crate::lang::{LangEngine};
 pub mod system_metrics;
 
 mod run;
+mod system_loop;
 
 #[export_module]
 pub mod system_module {
     pub fn sleep(s: i64) {
-        let t = howlong::HighResolutionTimer::new();
         thread::sleep(time::Duration::from_secs(s as u64));
-        log::debug!("slept for {:?}", t.elapsed());
     }
     pub fn sleep_millisecond(s: i64) {
-        let t = howlong::HighResolutionTimer::new();
         thread::sleep(time::Duration::from_millis(s as u64));
-        log::debug!("slept for {:?}", t.elapsed());
     }
     pub fn env(n: String) -> String {
         match env::var(&n) {
@@ -38,8 +34,8 @@ pub mod system_module {
 
 #[derive(Debug, Clone)]
 pub struct NRBus {
-    s: Sender<String>,
-    r: Receiver<String>,
+    pub s: Sender<String>,
+    pub r: Receiver<String>,
 }
 
 impl NRBus {
@@ -50,7 +46,7 @@ impl NRBus {
             r: r,
         }
     }
-    fn init() -> NRBus {
+    pub fn init() -> NRBus {
         NRBus::new()
     }
 
@@ -69,6 +65,19 @@ impl NRBus {
             }
         };
         return Ok(Dynamic::from(self.s.len() as i64));
+    }
+    pub fn try_recv_raw(&mut self) -> Result<String, Box<EvalAltResult>> {
+        if self.r.len() == 0 {
+            return Err("Bus is empty".into());
+        }
+        match self.r.recv() {
+            Ok(res) => {
+                return Ok(res);
+            },
+            Err(_) => {
+                return Err("Error receiving from bus".into());
+            }
+        }
     }
     pub fn try_recv(&mut self) -> Result<Dynamic, Box<EvalAltResult>> {
         if self.r.len() == 0 {
@@ -96,7 +105,7 @@ impl NRBus {
         }
         match self.r.recv() {
             Ok(res) => {
-                match to_dynamic(&res) {
+                match from_str(&res) {
                     Ok(val) => {
                         return Ok(val);
                     },
@@ -127,11 +136,13 @@ pub fn init(engine: &mut LangEngine) {
     internal_module.set_id("internal");
     internal_module.set_native_fn("run", run::str_run);
     internal_module.set_native_fn("run", run::txt_run);
+    internal_module.set_native_fn("background_run", run::str_spawn);
     let mut default_bus = NRBus::init();
     default_bus.s = engine.s.clone();
     default_bus.r = engine.r.clone();
     internal_module.set_var("bus", default_bus);
-    let module = exported_module!(system_module);
+    let mut module = exported_module!(system_module);
+    module.set_native_fn("eventloop", system_loop::system_loop);
     engine.engine.register_static_module("system", module.into());
     engine.engine.register_static_module("internal", internal_module.into());
     system_metrics::init(&mut engine.engine);

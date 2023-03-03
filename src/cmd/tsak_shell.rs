@@ -5,11 +5,14 @@ use crate::stdlib::banner;
 use crate::cmd;
 use crate::lang;
 
+use crate::cmd::tsak_processors;
+
 pub fn run_shell(c: &cmd::Cli, args: &Vec<String>)  {
     log::trace!("run_shell() reached");
     println!("{}", banner::bund_banner());
     let mut engine = lang::LangEngine::init(c);
     engine.set_extra_scope(args);
+    tsak_processors::tsak_processors(c.clone(), &engine);
     let mut line = Editor::<()>::new().unwrap();
     if line.load_history(".tsak_history").is_err() {
         log::warn!("No previous history discovered");

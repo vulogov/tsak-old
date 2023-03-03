@@ -7,6 +7,9 @@ use flate2::Compression;
 use rhai::{Engine, Map, Scope, format_map_as_json};
 use rhai::plugin::*;
 
+use crate::stdlib::bus::queue::{try_queue_is_empty, try_queue_push};
+use crate::stdlib::system::system_module::{sleep_millisecond};
+
 pub mod graphql;
 pub mod event;
 pub mod metric;
@@ -34,8 +37,7 @@ pub mod nr_module {
         return res;
     }
     pub fn log(url: &str, key: &str, nr_log: Map) -> bool {
-        let payload = format!("{}", format_map_as_json(&nr_log));
-        log::debug!("Payload: {}", &payload);
+        let payload = format!("[{}]", format_map_as_json(&nr_log));
         let t = howlong::HighResolutionTimer::new();
         let res = nrlog::raw::send_log_payload(&url.to_string(), &key.to_string(), &payload);
         log::debug!("{:?} takes to send log", t.elapsed());
@@ -52,26 +54,73 @@ pub mod nr_module {
 
     pub mod queue {
         #[rhai_fn(name="event")]
-        pub fn event_str(p: String) -> bool {
-            event::event_pipe::queue_json_payload_to_events(p)
-        }
-        #[rhai_fn(name="event")]
-        pub fn event_map(p: Map) -> bool {
-            event::event_pipe::queue_map_payload_to_events(p)
-        }
-        pub fn wait_for_events() {
-            event::event_pipe::wait_events_for_complete();
-        }
-        #[rhai_fn(name="metric")]
-        pub fn metric_str(p: String) -> bool {
-            metric::metric_pipe::queue_json_payload_to_metrics(p)
+        pub fn event_map(p: Map) -> bool  {
+            match try_queue_push("events".to_string(), Dynamic::from(p)) {
+                Ok(res) => res,
+                Err(_) => false,
+            }
         }
         #[rhai_fn(name="metric")]
         pub fn metric_map(p: Map) -> bool {
-            metric::metric_pipe::queue_map_payload_to_metrics(p)
+            match try_queue_push("metrics".to_string(), Dynamic::from(p)) {
+                Ok(res) => res,
+                Err(_) => false,
+            }
+        }
+        #[rhai_fn(name="log")]
+        pub fn log_map(p: Map) -> bool {
+            match try_queue_push("logs".to_string(), Dynamic::from(p)) {
+                Ok(res) => res,
+                Err(_) => false,
+            }
         }
         pub fn wait_for_metrics() {
-            metric::metric_pipe::wait_metrics_for_complete();
+            loop {
+                log::trace!("Flushing metrics queue");
+                sleep_millisecond(500);
+                match try_queue_is_empty("metrics".to_string()) {
+                    Ok(res) => {
+                        if res {
+                            return;
+                        }
+                    }
+                    Err(_) => continue,
+                }
+            }
+        }
+        pub fn wait_for_events() {
+            loop {
+                log::trace!("Flushing events queue");
+                sleep_millisecond(500);
+                match try_queue_is_empty("events".to_string()) {
+                    Ok(res) => {
+                        if res {
+                            return;
+                        }
+                    }
+                    Err(_) => continue,
+                }
+            }
+        }
+        pub fn wait_for_logs() {
+            loop {
+                log::trace!("Flushing logs queue");
+                sleep_millisecond(500);
+                match try_queue_is_empty("logs".to_string()) {
+                    Ok(res) => {
+                        if res {
+                            return;
+                        }
+                    }
+                    Err(_) => continue,
+                }
+            }
+        }
+        pub fn wait_for() {
+            wait_for_metrics();
+            wait_for_events();
+            wait_for_logs();
+            log::debug!("All New Relic queues was flushed");
         }
     }
 }
@@ -99,11 +148,8 @@ pub fn init(engine: &mut Engine, scope: &mut Scope) {
     module.set_var("INSTANCE", scope.get_value::<String>("INSTANCE").unwrap());
     engine.register_static_module("newrelic", module.into());
     event::event_type::init(engine);
-    event::event_pipe::init(engine, scope);
     metric::metric_type::init(engine);
     security::security_type::init(engine);
-    metric::metric_pipe::init(engine, scope);
-    security::security_pipe::init(engine, scope);
     nrlog::log_type::init(engine);
     graphql::nrql_type::init(engine);
     graphql::result_type::init(engine);

@@ -1,0 +1,4 @@
+let log_entry = Log("This is a test log entry");
+log_entry["instanceId"] = INSTANCE;
+newrelic::queue::log(log_entry.raw());
+newrelic::queue::wait_for_logs();

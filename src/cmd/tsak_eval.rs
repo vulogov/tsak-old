@@ -1,11 +1,13 @@
 extern crate log;
 use crate::cmd;
 use crate::lang;
+use crate::cmd::tsak_processors;
 
 pub fn run_eval(c: &cmd::Cli, args: &Vec<String>)  {
     log::trace!("run_eval() reached");
     let mut engine = lang::LangEngine::init(c);
     engine.set_extra_scope(args);
+    tsak_processors::tsak_processors(c.clone(), &engine);
     log::trace!("Engine established");
     let t = howlong::HighResolutionTimer::new();
     for script in args {

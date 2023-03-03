@@ -2,7 +2,8 @@ extern crate log;
 use ureq::post;
 
 pub fn send_log_payload(url: &String, key: &String, payload: &String) -> bool {
-    let data = format!(r#"[{{"log":{}}}]"#, &payload);
+    let data = format!(r#"[{{"logs":{}}}]"#, &payload);
+    log::trace!("Payload to send: {:?}", &data);
     let url = format!("https://{}/log/v1", url);
     log::trace!("Endpoint URL: {}", url);
     let resp = post(&url)

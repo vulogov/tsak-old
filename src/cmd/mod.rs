@@ -19,9 +19,12 @@ mod tsak_eval;
 mod tsak_spawn;
 mod tsak_init;
 mod tsak_fin;
+pub mod tsak_processors;
+pub mod tsak_queue_processors;
 
 
 pub fn init() {
+    log::debug!("Parsing CLI parameters");
     let cli = Cli::parse();
     setloglevel::setloglevel(&cli);
     sanity::check_sanity(cli.clone());
@@ -104,6 +107,9 @@ pub struct Cli {
 
     #[clap(long, action = clap::ArgAction::Count, help="Pre-load languages for linguistic::* functions")]
     pub lang_preload: u8,
+
+    #[clap(long, default_value_t=4, help="Number of pre-spawned processes for background execution")]
+    proc:  u32,
 
     #[clap(subcommand)]
     command: Commands,
