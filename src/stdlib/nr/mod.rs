@@ -77,7 +77,7 @@ pub mod nr_module {
         pub fn wait_for_metrics() {
             loop {
                 log::trace!("Flushing metrics queue");
-                sleep_millisecond(500);
+                sleep_millisecond(100);
                 match try_queue_is_empty("metrics".to_string()) {
                     Ok(res) => {
                         if res {
@@ -91,7 +91,7 @@ pub mod nr_module {
         pub fn wait_for_events() {
             loop {
                 log::trace!("Flushing events queue");
-                sleep_millisecond(500);
+                sleep_millisecond(100);
                 match try_queue_is_empty("events".to_string()) {
                     Ok(res) => {
                         if res {
@@ -105,7 +105,7 @@ pub mod nr_module {
         pub fn wait_for_logs() {
             loop {
                 log::trace!("Flushing logs queue");
-                sleep_millisecond(500);
+                sleep_millisecond(100);
                 match try_queue_is_empty("logs".to_string()) {
                     Ok(res) => {
                         if res {
