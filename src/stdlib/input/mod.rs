@@ -13,7 +13,7 @@ pub mod ssh;
 pub mod textfile;
 pub mod binfile;
 pub mod distributions;
-
+pub mod spawn;
 
 
 #[export_module]
@@ -55,6 +55,7 @@ pub fn init(engine: &mut Engine) {
 
     let mut module = exported_module!(input_module);
     module.set_native_fn("watch", watch::file_watch);
+    module.set_native_fn("expect", spawn::expect_input);
 
     let mut textfile_module = Module::new();
     textfile_module.set_native_fn("forward", textfile::textfile_forward);

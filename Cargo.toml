@@ -64,6 +64,7 @@ wikipedia = "0.3.4"
 hyper = "0.14.24"
 binary_rw = "4.0.4"
 crossbeam-deque = "0.8.3"
+expectrl = "0.6.0"
 
 
 [dependencies.rhai]
