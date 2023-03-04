@@ -56,5 +56,10 @@ pub fn tsak_init(c: cmd::Cli) {
     tokio::spawn(async move {
         tsak_bus_update_processors::bus_update_server_processor_main(spawn_c).await;
     });
+    log::debug!("cmd::tsak_init(): bus_update_client_processor_main thread");
+    let spawn_c = c.clone();
+    tokio::spawn(async move {
+        tsak_bus_update_processors::bus_update_client_processor_main(spawn_c).await;
+    });
     log::debug!("cmd::tsak_init() done");
 }

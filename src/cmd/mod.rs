@@ -117,6 +117,15 @@ pub struct Cli {
     #[clap(long, default_value_t=4, help="Number of pre-spawned processes for background execution")]
     proc:  u32,
 
+    #[clap(help="TSAK instance capability", long, default_value_t = String::from("tsak,bus,heartbeat,update"))]
+    pub capability: String,
+
+    #[clap(help="URI of TSAK update server", long, default_value_t = String::from("tcp://127.0.0.1:20010"))]
+    pub update_server: String,
+
+    #[clap(help="URI of TSAK update heartbeat", long, default_value_t = String::from("tcp://127.0.0.1:20012"))]
+    pub update_heartbeat: String,
+
     #[clap(help="TSAK bus update URI", long, default_value_t = String::from("tcp://0.0.0.0:20010"))]
     pub update_uri: String,
 
