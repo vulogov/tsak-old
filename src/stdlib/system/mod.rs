@@ -1,5 +1,6 @@
 extern crate log;
-use std::{thread, time, env};
+use std::{env};
+use std::{thread, time};
 use rhai::{Dynamic, Module, EvalAltResult};
 use rhai::plugin::*;
 use crossbeam_channel::{unbounded, Sender, Receiver};
