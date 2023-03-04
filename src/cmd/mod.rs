@@ -22,6 +22,7 @@ mod tsak_init;
 mod tsak_fin;
 pub mod tsak_processors;
 pub mod tsak_queue_processors;
+pub mod tsak_bus_update_processors;
 
 
 pub fn init() {
@@ -115,6 +116,18 @@ pub struct Cli {
 
     #[clap(long, default_value_t=4, help="Number of pre-spawned processes for background execution")]
     proc:  u32,
+
+    #[clap(help="TSAK bus update URI", long, default_value_t = String::from("tcp://0.0.0.0:20010"))]
+    pub update_uri: String,
+
+    #[clap(help="TSAK bus inject URI", long, default_value_t = String::from("tcp://0.0.0.0:20011"))]
+    pub inject_uri: String,
+
+    #[clap(help="TSAK bus heartbeat URI", long, default_value_t = String::from("tcp://0.0.0.0:20012"))]
+    pub heartbeat_uri: String,
+
+    #[clap(help="TSAK bus data URI", long, default_value_t = String::from("tcp://0.0.0.0:20013"))]
+    pub bus_data_uri: String,
 
     #[clap(subcommand)]
     command: Commands,

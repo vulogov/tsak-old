@@ -70,8 +70,10 @@ netscan-service = { version = "0.13.*", features = [  ] }
 netscan-os = { version = "0.13.*", features = [  ] }
 local-ip-address = "0.5.1"
 sudo = "0.6.0"
-qscan = "0.6.0"
+qscan = { version="0.6.*", features = ["serialize"]}
 yansi = "0.5.1"
+message-io = { version="0.14", default-features = false, features = ["tcp", "udp"] }
+scaproust = "0.3.2"
 
 
 

@@ -8,6 +8,7 @@ use std::net::{IpAddr};
 use sudo;
 use rhai::{Dynamic, Array, Map, NativeCallContext, EvalAltResult};
 
+
 pub fn scan_host(_context: NativeCallContext, src: String, dst: String) -> Result<Dynamic, Box<EvalAltResult>> {
     match sudo::check() {
         sudo::RunningAs::User => {
@@ -129,7 +130,7 @@ pub fn fingerprint_host(_context: NativeCallContext, src: String, dst: String) -
 pub fn services_host(_context: NativeCallContext, src: String, dst: String, p_low: i64, p_high: i64) -> Result<Dynamic, Box<EvalAltResult>> {
     match sudo::check() {
         sudo::RunningAs::User => {
-            return Err("Host fingerprinting require TSAK to be in privilege mode".into());
+            return Err("Host services scan require TSAK to be in privilege mode".into());
         }
         _ => {}
     }
