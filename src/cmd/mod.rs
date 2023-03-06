@@ -120,23 +120,11 @@ pub struct Cli {
     #[clap(help="TSAK instance capability", long, default_value_t = String::from("tsak,bus,heartbeat,update"))]
     pub capability: String,
 
-    #[clap(help="URI of TSAK update server", long, default_value_t = String::from("tcp://127.0.0.1:20010"))]
-    pub update_server: String,
+    #[clap(help="TSAK bus data URI for binding", long, default_value_t = String::from("tcp://0.0.0.0:20010"))]
+    pub bus: String,
 
-    #[clap(help="URI of TSAK update heartbeat", long, default_value_t = String::from("tcp://127.0.0.1:20012"))]
-    pub update_heartbeat: String,
-
-    #[clap(help="TSAK bus update URI", long, default_value_t = String::from("tcp://0.0.0.0:20010"))]
-    pub update_uri: String,
-
-    #[clap(help="TSAK bus inject URI", long, default_value_t = String::from("tcp://0.0.0.0:20011"))]
-    pub inject_uri: String,
-
-    #[clap(help="TSAK bus heartbeat URI", long, default_value_t = String::from("tcp://0.0.0.0:20012"))]
-    pub heartbeat_uri: String,
-
-    #[clap(help="TSAK bus data URI", long, default_value_t = String::from("tcp://0.0.0.0:20013"))]
-    pub bus_data_uri: String,
+    #[clap(long, action = clap::ArgAction::Count, help="Enable TSAK bus")]
+    bus_enable:  u8,
 
     #[clap(subcommand)]
     command: Commands,

@@ -51,15 +51,17 @@ pub fn tsak_init(c: cmd::Cli) {
     tokio::spawn(async move {
         tsak_queue_processors::zabbix_out_processor_main(spawn_c).await;
     });
-    log::debug!("cmd::tsak_init(): bus_update_server_processor_main thread");
-    let spawn_c = c.clone();
-    tokio::spawn(async move {
-        tsak_bus_update_processors::bus_update_server_processor_main(spawn_c).await;
-    });
-    log::debug!("cmd::tsak_init(): bus_update_client_processor_main thread");
+    if c.bus_enable > 0 {
+        log::info!("TSAK bus enabled for this instance");
+        let spawn_c = c.clone();
+        tokio::spawn(async move {
+            tsak_bus_update_processors::bus_update_server_processor_main(spawn_c).await;
+        });
+    } else {
+        log::debug!("TSAK bus disabled for this instance");
+    }
     let spawn_c = c.clone();
     tokio::spawn(async move {
         tsak_bus_update_processors::bus_update_client_processor_main(spawn_c).await;
     });
-    log::debug!("cmd::tsak_init() done");
 }
