@@ -72,8 +72,8 @@ sudo = "0.6.0"
 qscan = { version="0.6.*", features = ["serialize"]}
 yansi = "0.5.1"
 message-io = { version="0.14", default-features = false, features = ["tcp", "udp"] }
-scaproust = "0.3.2"
 echodb = "0.3.0"
+zeromq = { version = "*", default-features = false, features = ["async-std-runtime", "all-transport"] }
 
 
 
