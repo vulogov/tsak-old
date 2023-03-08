@@ -2,6 +2,7 @@ extern crate log;
 use howlong;
 use crate::cmd;
 
+use voca_rs::*;
 use crate::stdlib::linguistic::languages_preload;
 use crate::stdlib::bus::queue::queue_init;
 use crate::stdlib::bus::pipe::pipes_init;
@@ -60,8 +61,14 @@ pub fn tsak_init(c: cmd::Cli) {
     } else {
         log::debug!("TSAK bus disabled for this instance");
     }
-    let spawn_c = c.clone();
-    tokio::spawn(async move {
-        tsak_bus_update_processors::bus_update_client_processor_main(spawn_c).await;
-    });
+    if c.bus_connect.len() > 0 {
+        for s in c.bus_connect.split(",") {
+            let srv = manipulate::trim(&manipulate::expand_tabs(&s.to_string(), 1), "");
+            let spawn_srv = srv.clone();
+            let spawn_c = c.clone();
+            tokio::spawn(async move {
+                tsak_bus_update_processors::bus_update_client_processor_main(spawn_c, spawn_srv).await;
+            });
+        }
+    }
 }

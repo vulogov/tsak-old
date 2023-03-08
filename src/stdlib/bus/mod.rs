@@ -49,6 +49,8 @@ pub fn init(engine: &mut Engine) {
     internal_module.set_sub_module("pipe", internal_pipe_module);
     // Configuring cluster module
     cluster_module.set_native_fn("push", bus_update::update_bus_push);
+    cluster_module.set_native_fn("pull", bus_update::update_bus_pull);
+
 
     module.set_sub_module("internal", internal_module);
     module.set_sub_module("cluster", cluster_module);

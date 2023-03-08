@@ -123,7 +123,7 @@ pub struct Cli {
     #[clap(help="TSAK bus data URI for binding", long, default_value_t = String::from("tcp://0.0.0.0:20010"))]
     pub bus: String,
 
-    #[clap(help="TSAK bus data URI for connecting", long, default_value_t = String::from("tcp://127.0.0.1:20010"))]
+    #[clap(help="TSAK bus data URI for connecting", long, default_value_t = String::from(""))]
     pub bus_connect: String,
 
     #[clap(long, action = clap::ArgAction::Count, help="Enable TSAK bus")]
