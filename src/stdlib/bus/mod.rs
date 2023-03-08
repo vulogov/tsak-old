@@ -9,6 +9,7 @@ use std::sync::Mutex;
 
 pub mod queue;
 pub mod pipe;
+pub mod bus_update;
 
 lazy_static! {
     static ref QUEUES: Mutex<BTreeMap<String,Worker<String>>> = {
@@ -30,10 +31,12 @@ pub fn init(engine: &mut Engine) {
     let mut internal_module = Module::new();
     let mut internal_queue_module = Module::new();
     let mut internal_pipe_module = Module::new();
+    let mut cluster_module = Module::new();
     module.set_id("bus");
     internal_module.set_id("internal");
     internal_queue_module.set_id("queue");
     internal_pipe_module.set_id("pipe");
+    cluster_module.set_id("cluster");
     // Configuring queue module
     internal_queue_module.set_native_fn("push", queue::queue_push);
     internal_queue_module.set_native_fn("pull", queue::queue_pull);
@@ -44,8 +47,14 @@ pub fn init(engine: &mut Engine) {
     internal_pipe_module.set_native_fn("pull", pipe::pipe_pull);
     internal_pipe_module.set_native_fn("is_empty", pipe::pipe_is_empty);
     internal_module.set_sub_module("pipe", internal_pipe_module);
+    // Configuring cluster module
+    cluster_module.set_native_fn("push", bus_update::update_bus_push);
+    cluster_module.set_native_fn("pull", bus_update::update_bus_pull);
+
 
     module.set_sub_module("internal", internal_module);
+    module.set_sub_module("cluster", cluster_module);
+
 
     engine.register_static_module("bus", module.into());
 }

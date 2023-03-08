@@ -12,6 +12,8 @@ pub fn queue_init() {
     q.insert("metrics".to_string(), Worker::new_fifo());
     q.insert("logs".to_string(), Worker::new_fifo());
     q.insert("vulnerabilities".to_string(), Worker::new_fifo());
+    q.insert("bus_publish".to_string(), Worker::new_fifo());
+    q.insert("bus_receive".to_string(), Worker::new_fifo());
     drop(q);
 }
 
@@ -46,8 +48,50 @@ pub fn queue_read_payloads(k: String, n: usize) -> Vec<Map> {
     res
 }
 
+pub fn queue_read_string_payloads(k: String, n: usize) -> Vec<String> {
+    let mut res: Vec<String> = Vec::new();
+    let mut q = QUEUES.lock().unwrap();
+    if ! q.contains_key(&k) {
+        drop(q);
+        return res;
+    }
+    let w = q.get_mut(&k).unwrap();
+    let s = w.stealer();
+    drop(q);
+    let mut c = 0;
+    for _ in 0..n {
+        if s.is_empty() {
+            break;
+        }
+        match s.steal() {
+            Steal::Success(val) => {
+                res.push(val);
+            }
+            _ => { c += 1; },
+        }
+    }
+    if c > 0 {
+        log::error!("{} errors in JSON-as-String payload acquisition in {}", c, &k);
+    }
+    res
+}
+
 pub fn queue_push(_context: NativeCallContext, k: String, d: Dynamic) -> Result<bool, Box<EvalAltResult>> {
     try_queue_push(k, d)
+}
+
+pub fn queue_push_raw(k: String, d: String) {
+    let mut q = QUEUES.lock().unwrap();
+    if ! q.contains_key(&k) {
+        log::trace!("new bus::internal::queue : {}", &k);
+        let w = Worker::new_fifo();
+        w.push(d);
+        q.insert(k, w);
+    } else {
+        let w = q.get_mut(&k).unwrap();
+        w.push(d);
+    }
+    drop(q);
 }
 
 pub fn try_queue_push(k: String, d: Dynamic) -> Result<bool, Box<EvalAltResult>> {

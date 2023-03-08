@@ -13,6 +13,7 @@ mod fuzzy;
 mod tokens;
 mod tokens_text;
 mod text_text;
+mod num_extract;
 
 #[derive(Debug, Clone)]
 pub struct Text {
@@ -120,6 +121,9 @@ pub fn init(engine: &mut Engine) {
     let mut token_module = Module::new();
     token_module.set_native_fn("tokenize", tokens::str_tokenize);
     token_module.set_native_fn("tokenize", tokens::str_tokenize_text);
+    token_module.set_native_fn("numbers_extract", num_extract::num_extract_text);
+    token_module.set_native_fn("numbers_extract", num_extract::num_extract_str);
+    
     module.set_sub_module("tokenize", token_module);
 
     engine.register_static_module("str", module.into());

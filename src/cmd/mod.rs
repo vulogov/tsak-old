@@ -8,6 +8,7 @@ use crate::stdlib::genid;
 
 pub mod setloglevel;
 pub mod sanity;
+pub mod privilege;
 mod tsak_shell;
 mod tsak_run;
 mod tsak_version;
@@ -21,18 +22,20 @@ mod tsak_init;
 mod tsak_fin;
 pub mod tsak_processors;
 pub mod tsak_queue_processors;
+pub mod tsak_bus_update_processors;
 
 
 pub fn init() {
     log::debug!("Parsing CLI parameters");
     let cli = Cli::parse();
     setloglevel::setloglevel(&cli);
+    privilege::check_privilege(cli.clone());
     sanity::check_sanity(cli.clone());
     tsak_init::tsak_init(cli.clone());
     match &cli.command {
         Commands::Shell(shell) => {
             log::debug!("Interactive shell requested");
-            tsak_shell::run_shell(&cli, &shell.args);
+            tsak_shell::run_shell(&cli, shell.nocolor, &shell.args);
         }
         Commands::Run(run) => {
             log::debug!("Scripts execution requested");
@@ -71,6 +74,9 @@ pub fn init() {
 pub struct Cli {
     #[clap(short, long, action = clap::ArgAction::Count, help="Increase verbosity")]
     pub debug: u8,
+
+    #[clap(long, action = clap::ArgAction::Count, help="Check if TSAK is running with elevated privileges")]
+    pub privilege: u8,
 
     #[clap(long, default_value_t = String::from("insights-collector.newrelic.com"), help="Hostname for Event API")]
     pub nr_event: String,
@@ -111,6 +117,18 @@ pub struct Cli {
     #[clap(long, default_value_t=4, help="Number of pre-spawned processes for background execution")]
     proc:  u32,
 
+    #[clap(help="TSAK instance capability", long, default_value_t = String::from("tsak,bus,heartbeat,update"))]
+    pub capability: String,
+
+    #[clap(help="TSAK bus data URI for binding", long, default_value_t = String::from("tcp://0.0.0.0:20010"))]
+    pub bus: String,
+
+    #[clap(help="TSAK bus data URI for connecting", long, default_value_t = String::from(""))]
+    pub bus_connect: String,
+
+    #[clap(long, action = clap::ArgAction::Count, help="Enable TSAK bus")]
+    bus_enable:  u8,
+
     #[clap(subcommand)]
     command: Commands,
 }
@@ -131,6 +149,9 @@ enum Commands {
 #[derive(Args, Clone, Debug)]
 #[clap(about="Run Interactive shell")]
 struct Shell {
+    #[clap(long, action = clap::ArgAction::Count, help="Disable colors in TSAK shell")]
+    pub nocolor: u8,
+
     #[clap(last = true)]
     args: Vec<String>,
 }

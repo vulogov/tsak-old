@@ -1,7 +1,5 @@
 extern crate log;
 use crate::cmd;
-#[cfg(feature = "tokio-runtime")]
-use bastion::prelude::*;
 use crate::stdlib::system::system_module::{sleep,sleep_millisecond};
 use crate::stdlib::bus::queue::queue_read_payloads;
 use serde_json::{to_string};
