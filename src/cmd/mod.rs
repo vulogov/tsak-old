@@ -129,6 +129,9 @@ pub struct Cli {
     #[clap(long, action = clap::ArgAction::Count, help="Enable TSAK bus")]
     bus_enable:  u8,
 
+    #[clap(long, action = clap::ArgAction::Count, help="Place TSAK into a sandbox mode")]
+    pub sandbox:  u8,
+
     #[clap(subcommand)]
     command: Commands,
 }

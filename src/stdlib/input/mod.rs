@@ -3,6 +3,7 @@ use rhai::{Engine, Map};
 use rhai::plugin::*;
 use fsio::{file};
 use crate::tsak_lib::io::get_file;
+use crate::cmd;
 
 pub mod command;
 pub mod watch;
@@ -50,12 +51,17 @@ pub mod input_module {
     }
 }
 
-pub fn init(engine: &mut Engine) {
+pub fn init(engine: &mut Engine, c: cmd::Cli) {
     log::trace!("Running STDLIB::input init");
 
     let mut module = exported_module!(input_module);
     module.set_native_fn("watch", watch::file_watch);
-    module.set_native_fn("expect", spawn::expect_input);
+    if c.sandbox == 0 {
+        module.set_native_fn("expect", spawn::expect_input);
+    } else {
+        log::warn!("TSAK is in sandbox mode. input::expect() will be disabled");
+        module.set_native_fn("expect", spawn::disabled_expect_input);
+    }
 
     let mut textfile_module = Module::new();
     textfile_module.set_native_fn("forward", textfile::textfile_forward);

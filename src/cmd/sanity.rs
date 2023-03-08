@@ -20,4 +20,7 @@ pub fn check_sanity(c: cmd::Cli) {
         std::process::exit(10)
     }
     log::debug!("NR INSERT key is {}", c.nr_insert_key);
+    if c.sandbox > 0 {
+        log::warn!("TSAK is in sandbox mode. Some functions WILL fail");
+    }
 }
