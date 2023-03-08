@@ -34,9 +34,6 @@ pub mod input_module {
             }
         }
     }
-    pub fn command(c: &str, a: String) -> String {
-        command::os_command(c, &a)
-    }
     pub fn snmp(addr: String, oid: String, community: String) -> Dynamic {
         snmp::snmp_get(&addr, &oid, &community)
     }
@@ -45,9 +42,6 @@ pub mod input_module {
     }
     pub fn zabbix(addr: String, key: String) -> String {
         zabbix::zabbix_get(addr, key)
-    }
-    pub fn ssh(addr: String, cmd: String) -> String {
-        ssh::ssh_command(addr, cmd)
     }
 }
 
@@ -58,9 +52,15 @@ pub fn init(engine: &mut Engine, c: cmd::Cli) {
     module.set_native_fn("watch", watch::file_watch);
     if c.sandbox == 0 {
         module.set_native_fn("expect", spawn::expect_input);
+        module.set_native_fn("command", command::os_command);
+        module.set_native_fn("ssh", ssh::ssh_command);
     } else {
         log::warn!("TSAK is in sandbox mode. input::expect() will be disabled");
         module.set_native_fn("expect", spawn::disabled_expect_input);
+        log::warn!("TSAK is in sandbox mode. input::command() will be disabled");
+        module.set_native_fn("command", command::disabled_os_command);
+        log::warn!("TSAK is in sandbox mode. input::ssh() will be disabled");
+        module.set_native_fn("ssh", ssh::disabled_ssh_command);
     }
 
     let mut textfile_module = Module::new();
