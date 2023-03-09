@@ -74,6 +74,7 @@ yansi = "0.5.1"
 message-io = { version="0.14", default-features = false, features = ["tcp", "udp"] }
 echodb = "0.3.0"
 zeromq = { version = "*", default-features = false, features = ["async-std-runtime", "all-transport"] }
+portpicker = "0.1.1"
 
 [dependencies.rhai]
 version = "1.12.*"

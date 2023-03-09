@@ -23,6 +23,7 @@ mod tsak_fin;
 pub mod tsak_processors;
 pub mod tsak_queue_processors;
 pub mod tsak_bus_update_processors;
+pub mod tsak_bus_discovery;
 
 
 pub fn init() {
@@ -113,6 +114,9 @@ pub struct Cli {
 
     #[clap(long, action = clap::ArgAction::Count, help="Pre-load languages for linguistic::* functions")]
     pub lang_preload: u8,
+
+    #[clap(long, default_value_t=20011, help="Port for sending service discovery broadcasts")]
+    discovery_port:  u16,
 
     #[clap(long, default_value_t=4, help="Number of pre-spawned processes for background execution")]
     proc:  u32,
