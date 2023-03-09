@@ -2,7 +2,7 @@ extern crate log;
 use rhai::{Engine, Map};
 use rhai::plugin::*;
 use fsio::{file};
-use crate::tsak_lib::io::get_file;
+use crate::tsak_lib::io::{get_file};
 use crate::cmd;
 
 pub mod command;
@@ -15,6 +15,7 @@ pub mod textfile;
 pub mod binfile;
 pub mod distributions;
 pub mod spawn;
+pub mod docker;
 
 
 #[export_module]
@@ -34,6 +35,9 @@ pub mod input_module {
             }
         }
     }
+    pub fn socket(u: &str, surl: &str) -> String {
+        get_file::get_from_socket(u.to_string(), surl.to_string())
+    }
     pub fn snmp(addr: String, oid: String, community: String) -> Dynamic {
         snmp::snmp_get(&addr, &oid, &community)
     }
@@ -50,6 +54,7 @@ pub fn init(engine: &mut Engine, c: cmd::Cli) {
 
     let mut module = exported_module!(input_module);
     module.set_native_fn("watch", watch::file_watch);
+    module.set_native_fn("docker", docker::docker_stat);
     if c.sandbox == 0 {
         module.set_native_fn("expect", spawn::expect_input);
         module.set_native_fn("command", command::os_command);
