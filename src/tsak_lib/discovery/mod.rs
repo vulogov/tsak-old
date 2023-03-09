@@ -146,6 +146,7 @@ impl BeaconSender {
 }
 
 /// `Beacon` contains information about the beacon that was received by a `BeaconListener`
+#[derive(Debug, Clone)]
 pub struct Beacon {
     /// The IP address and port the beacon was sent from
     pub service_ip: String,

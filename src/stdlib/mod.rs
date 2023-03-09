@@ -28,6 +28,7 @@ pub mod sampler;
 pub mod linguistic;
 pub mod data;
 pub mod bus;
+pub mod parser;
 
 
 #[macro_export]
@@ -66,4 +67,5 @@ pub fn initlib(engine: &mut LangEngine, c: &Cli) {
 	linguistic::init(&mut engine.engine);
 	data::init(&mut engine.engine);
 	bus::init(&mut engine.engine);
+	parser::init(&mut engine.engine);
 }
