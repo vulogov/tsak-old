@@ -3,6 +3,7 @@ use rhai::{Dynamic, Array, EvalAltResult};
 use rhai::plugin::*;
 
 use crate::stdlib::sampler::tsf::TSF;
+use crate::stdlib::sampler::forecast_oscillator::FOSC;
 use crate::tsak_lib::traits::Indicator;
 use lexical_core;
 use std::collections::VecDeque;
@@ -16,12 +17,15 @@ mod generate;
 mod harmonic;
 mod distributions;
 pub mod tsf;
+pub mod forecast_oscillator;
 
 #[derive(Debug, Clone)]
 pub struct Sampler {
     d: VecDeque<f64>,
     tsf: TSF,
+    fosc: FOSC,
     tsf_next: f64,
+    fosc_next: f64,
 }
 
 impl Sampler {
@@ -29,7 +33,9 @@ impl Sampler {
         Self {
             d: VecDeque::with_capacity(128),
             tsf: TSF::new(8),
+            fosc: FOSC::new(8),
             tsf_next: 0.0 as f64,
+            fosc_next: 0.0 as f64,
         }
     }
     pub fn init() -> Sampler {
@@ -51,6 +57,12 @@ impl Sampler {
                 self.tsf_next = next_val;
             }
             None => self.tsf_next = v.clone(),
+        }
+        match self.fosc.next(v.clone()) {
+            Some(next_val) => {
+                self.fosc_next = next_val;
+            }
+            None => self.fosc_next = v.clone(),
         }
         let _ = self.d.push_back(v);
     }
@@ -76,6 +88,9 @@ impl Sampler {
     }
     fn tsf_next(self: &mut Sampler) -> Dynamic {
         Dynamic::from(self.tsf_next)
+    }
+    fn oscillator(self: &mut Sampler) -> Dynamic {
+        Dynamic::from(self.fosc_next)
     }
     fn get(self: &mut Sampler) -> Dynamic {
         let mut res = Array::new();
@@ -159,6 +174,7 @@ pub fn init(engine: &mut Engine) {
           .register_fn("set", Sampler::set)
           .register_fn("get", Sampler::get)
           .register_fn("tsf_next", Sampler::tsf_next)
+          .register_fn("oscillator", Sampler::oscillator)
           .register_fn("downsample", Sampler::downsample)
           .register_fn("smooth", Sampler::smooth)
           .register_fn("exp_smooth", Sampler::exp_smooth)
