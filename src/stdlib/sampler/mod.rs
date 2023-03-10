@@ -19,6 +19,7 @@ mod harmonic;
 mod distributions;
 pub mod tsf;
 pub mod forecast_oscillator;
+pub mod markov;
 
 #[derive(Debug, Clone)]
 pub struct Sampler {
@@ -150,8 +151,8 @@ impl Sampler {
         if (i < 0) || (i > 127) {
             return Err("Sampler.get() out of bound".into());
         }
-        let x = self.d.get(i as usize).unwrap().clone();
-        let y = self.s.get(i as usize).unwrap().clone();
+        let x = self.s.get(i as usize).unwrap().clone();
+        let y = self.d.get(i as usize).unwrap().clone();
         return Result::Ok((x,y));
     }
     fn get_xy(self: &mut Sampler, i: i64) -> Result<Dynamic, Box<EvalAltResult>> {
@@ -252,6 +253,7 @@ pub fn init(engine: &mut Engine) {
           .register_fn("equal", Sampler::equal)
           .register_fn("equal", Sampler::try_equal)
           .register_fn("harmonic", Sampler::harmonic)
+          .register_fn("markov", Sampler::markov)
           .register_fn("to_string", |x: &mut Sampler| format!("{:?}", x.d) );
 
     let mut module = exported_module!(sampler_module);

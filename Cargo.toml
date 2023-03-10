@@ -50,7 +50,7 @@ fuzzy-matcher = "0.3.7"
 distance = "0.4.0"
 charabia = "0.7.0"
 reachable = "0.2.2"
-ndarray = "0.15.6"
+ndarray = "0.13.*"
 compute = "0.2.3"
 ta = "0.5.*"
 statrs = "0.16.*"
@@ -76,6 +76,9 @@ echodb = "0.3.0"
 zeromq = { version = "*", default-features = false, features = ["async-std-runtime", "all-transport"] }
 portpicker = "0.1.1"
 html_parser = "0.6.*"
+markovr = "0.4.1"
+decorum = "0.3.1"
+
 
 [dependencies.rhai]
 version = "1.12.*"
