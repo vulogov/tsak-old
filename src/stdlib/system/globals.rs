@@ -50,3 +50,10 @@ impl NRGlobals {
         Err(format!("global key error: {}", &name).into())
     }
 }
+
+pub fn get_global(x: String) -> Result<Dynamic, Box<EvalAltResult>> {
+    let mut g = NRGlobals::new();
+    let res = g.get_global(x);
+    drop(g);
+    res
+}
