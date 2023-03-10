@@ -57,3 +57,9 @@ pub fn get_global(x: String) -> Result<Dynamic, Box<EvalAltResult>> {
     drop(g);
     res
 }
+
+pub fn set_global(x: String, v: Dynamic) {
+    let mut g = NRGlobals::new();
+    g.set_global(x, v);
+    drop(g);
+}

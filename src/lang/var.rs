@@ -1,7 +1,7 @@
 extern crate log;
 use rhai::{Dynamic};
 use crate::lang::{LangEngine};
-use crate::stdlib::system::globals::{NRGlobals, get_global};
+use crate::stdlib::system::globals::{NRGlobals, get_global, set_global};
 
 impl LangEngine<'_> {
     pub fn create_var_syntax(&mut self) {
@@ -21,6 +21,7 @@ impl LangEngine<'_> {
             }
         });
         self.engine.register_fn("glob", |x: String | get_global(x) );
+        self.engine.register_fn("glob", |x: String, v: Dynamic | set_global(x, v) );
     }
 
 }
