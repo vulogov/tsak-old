@@ -1,7 +1,7 @@
 let sample = Sampler();
 
-fn echo(v) {
-  return v;
+fn echo(x, y) {
+  return x;
 }
 
 for i in 1..128 {
