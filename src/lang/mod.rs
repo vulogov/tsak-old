@@ -10,6 +10,7 @@ use crate::stdlib::nr::nr_module::queue::{wait_for};
 
 pub mod scope;
 pub mod size;
+pub mod var;
 
 pub type RhaiResult<T> = std::result::Result<T, Box<EvalAltResult>>;
 
@@ -41,6 +42,7 @@ impl LangEngine<'_> {
     }
     pub fn init(c: &Cli) -> LangEngine<'static> {
         let mut e = LangEngine::new();
+        e.create_var_syntax();
         log::debug!("Init for engine: {}", &e.id);
         e.name = c.name.clone();
         if c.debug > 0 {
@@ -58,6 +60,7 @@ impl LangEngine<'_> {
     }
     pub fn init_with_channels(c: &Cli, s: Sender<String>, r: Receiver<String>) -> LangEngine<'static> {
         let mut e = LangEngine::new();
+        e.create_var_syntax();
         log::debug!("Init for engine: {}", &e.id);
         e.name = c.name.clone();
         if c.debug > 0 {

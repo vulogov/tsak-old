@@ -1,0 +1,6 @@
+fn some_function() {
+  var answer = 41 + 1;
+  print("Answer is here = "+system::globals["answer"]);
+}
+some_function();
+print("And here = "+system::globals["answer"]);
