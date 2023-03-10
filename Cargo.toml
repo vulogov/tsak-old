@@ -76,8 +76,8 @@ echodb = "0.3.0"
 zeromq = { version = "*", default-features = false, features = ["async-std-runtime", "all-transport"] }
 portpicker = "0.1.1"
 html_parser = "0.6.*"
-markovr = "0.4.1"
 decorum = "0.3.1"
+markov-chain = "0.1.1"
 
 
 [dependencies.rhai]

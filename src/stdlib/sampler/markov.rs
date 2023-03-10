@@ -1,8 +1,8 @@
 extern crate log;
 use crate::stdlib::sampler::Sampler;
-use rhai::{Dynamic};
+use rhai::{Dynamic, Array};
 use decorum::{R64};
-use markovr::MarkovChain;
+use markov_chain::Chain;
 
 impl Sampler {
     pub fn markov(&mut self) -> Dynamic {
@@ -11,9 +11,13 @@ impl Sampler {
         for v in source {
             dst.push(v.into());
         }
-        let palanteer = MarkovChain::<R64>::new(1, &[]);
-        let v = palanteer.generate(&dst);
-        println!("{:?}", &v);
-        Dynamic::default()
+        let mut palanteer = Chain::<R64>::new(16);
+        palanteer.train(dst);
+        let res = palanteer.generate_limit(16);
+        let mut out = Array::new();
+        for i in res {
+            out.push(Dynamic::from(f64::from(i)));
+        }
+        Dynamic::from(out)
     }
 }
