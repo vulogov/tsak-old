@@ -42,7 +42,7 @@ macro_rules! err {
 }
 
 pub fn initlib(engine: &mut LangEngine, c: &Cli) {
-    log::trace!("Running STDLIB init");
+    log::trace!("Running STDLIB init: [{}]", &engine.id());
     uuid::init(&mut engine.engine);
     env::init(&mut engine.engine);
     string::init(&mut engine.engine);

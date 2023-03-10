@@ -1,6 +1,6 @@
 extern crate log;
 extern crate hostname;
-use clap::{Args, Parser, Subcommand};
+use clap::{Args, Parser, Subcommand, ValueEnum};
 use std::env;
 use std::fmt::Debug;
 
@@ -75,6 +75,9 @@ pub fn init() {
 pub struct Cli {
     #[clap(short, long, action = clap::ArgAction::Count, help="Increase verbosity")]
     pub debug: u8,
+
+    #[clap(short, value_enum, default_value_t = Mode::Huge, help="Size of TSAK VM")]
+    pub vm: Mode,
 
     #[clap(long, action = clap::ArgAction::Count, help="Check if TSAK is running with elevated privileges")]
     pub privilege: u8,
@@ -151,6 +154,14 @@ enum Commands {
     Exec(Exec),
     Eval(Eval),
     Spawn(Spawn),
+}
+
+#[derive(Copy, Clone, ValueEnum)]
+pub enum Mode {
+    Small,
+    Medium,
+    Large,
+    Huge,
 }
 
 #[derive(Args, Clone, Debug)]
