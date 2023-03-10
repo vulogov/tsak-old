@@ -76,7 +76,7 @@ pub struct Cli {
     #[clap(short, long, action = clap::ArgAction::Count, help="Increase verbosity")]
     pub debug: u8,
 
-    #[clap(short, value_enum, default_value_t = Mode::Huge, help="Size of TSAK VM")]
+    #[clap(long, value_enum, default_value_t = Mode::Huge, help="Size of TSAK VM")]
     pub vm: Mode,
 
     #[clap(long, action = clap::ArgAction::Count, help="Check if TSAK is running with elevated privileges")]
