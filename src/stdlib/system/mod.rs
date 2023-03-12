@@ -17,6 +17,7 @@ pub mod system_metrics;
 mod run;
 mod system_loop;
 pub mod globals;
+pub mod dmesg;
 
 #[export_module]
 pub mod system_module {
