@@ -1,6 +1,6 @@
 [package]
 name = "tsak"
-version = "1.0.4"
+version = "1.0.5"
 edition = "2021"
 
 [dependencies]
@@ -50,9 +50,9 @@ fuzzy-matcher = "0.3.7"
 distance = "0.4.0"
 charabia = "0.7.0"
 reachable = "0.2.2"
-ndarray = "0.15.6"
+ndarray = "0.13.*"
 compute = "0.2.3"
-ta = "0.5.0"
+ta = "0.5.*"
 statrs = "0.16.*"
 rand = "0.8.*"
 hyphenation = { version = "0.8.*", features = [] }
@@ -74,7 +74,11 @@ yansi = "0.5.1"
 message-io = { version="0.14", default-features = false, features = ["tcp", "udp"] }
 echodb = "0.3.0"
 zeromq = { version = "*", default-features = false, features = ["async-std-runtime", "all-transport"] }
-
+portpicker = "0.1.1"
+html_parser = "0.6.*"
+decorum = "0.3.1"
+markov-chain = "0.1.1"
+rmesg = "1.0.20"
 
 
 [dependencies.rhai]

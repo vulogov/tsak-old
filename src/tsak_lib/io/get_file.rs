@@ -56,6 +56,31 @@ fn get_file_from_url(some_url: String) -> String {
     String::from_utf8_lossy(&contents.0).to_string()
 }
 
+pub fn get_from_socket(ux_socket: String, some_url: String) -> String {
+    struct Collector(Vec<u8>);
+
+    impl Handler for Collector {
+    fn write(&mut self, data: &[u8]) -> Result<usize, WriteError> {
+            self.0.extend_from_slice(data);
+            Ok(data.len())
+        }
+    }
+
+    let mut easy = Easy2::new(Collector(Vec::new()));
+    let _ = easy.useragent("TSAK");
+    easy.get(true).unwrap();
+    easy.url(&some_url).unwrap();
+    easy.unix_socket(&ux_socket).unwrap();
+    match easy.perform() {
+        Err(err) => {
+            log::error!("Request from {} returns {}", &ux_socket, err);
+            return "".to_string();
+        }
+        _ => {}
+    }
+    let contents = easy.get_ref();
+    String::from_utf8_lossy(&contents.0).to_string()
+}
 
 fn get_file_from_url_with_authorization(some_url: String, kind: String, token: String) -> String {
     struct Collector(Vec<u8>);

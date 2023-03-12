@@ -1,0 +1,6 @@
+let res = parser::html::parse(input::url("https://www.google.com"));
+for c in res["children"] {
+  print(c["attributes"]);
+}
+
+print(res);

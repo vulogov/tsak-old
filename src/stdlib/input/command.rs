@@ -4,8 +4,9 @@ use std::io::Read;
 use std::process::{Command};
 use os_pipe;
 use std::collections::HashMap;
+use rhai::{Dynamic, NativeCallContext, EvalAltResult};
 
-pub fn os_command(c: &str, a: &String) -> String {
+pub fn os_command(_context: NativeCallContext, c: String, a: String) -> Result<Dynamic, Box<EvalAltResult>> {
     let filtered_env : HashMap<String, String> =
         env::vars().filter(|&(ref k, _)|
         k == "TERM" || k == "TZ" || k == "LANG" || k == "PATH"
@@ -27,22 +28,28 @@ pub fn os_command(c: &str, a: &String) -> String {
                     let mut output = String::new();
                     let _ = reader.read_to_string(&mut output);
                     match handle.wait() {
-                        Ok(_) => output,
+                        Ok(_) => Result::Ok(Dynamic::from(output)),
                         Err(err) => {
                             log::error!("Error waiting for process: {}", err);
-                            return output;
+                            return Result::Ok(Dynamic::from(output));
                         }
                     }
                 }
                 Err(err) => {
-                    log::error!("Error executing command: {}", err);
-                    return "".to_string();
+                    let msg = format!("Error executing command: {}", err);
+                    log::error!("{}", &msg);
+                    return Err(msg.into());
                 }
             }
         }
         Err(err) => {
-            log::error!("Error creating pipe: {}", err);
-            return "".to_string();
+            let msg = format!("Error creating pipe: {}", err);
+            log::error!("{}", &msg);
+            return Err(msg.into());
         }
     }
+}
+
+pub fn disabled_os_command(_context: NativeCallContext, _c: String, _a: String) -> Result<Dynamic, Box<EvalAltResult>> {
+    Err("TSAK is in sandbox mode. input::command() is disabled".into())
 }

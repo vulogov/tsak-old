@@ -1,6 +1,6 @@
 extern crate log;
 extern crate hostname;
-use clap::{Args, Parser, Subcommand};
+use clap::{Args, Parser, Subcommand, ValueEnum};
 use std::env;
 use std::fmt::Debug;
 
@@ -23,6 +23,7 @@ mod tsak_fin;
 pub mod tsak_processors;
 pub mod tsak_queue_processors;
 pub mod tsak_bus_update_processors;
+pub mod tsak_bus_discovery;
 
 
 pub fn init() {
@@ -75,6 +76,9 @@ pub struct Cli {
     #[clap(short, long, action = clap::ArgAction::Count, help="Increase verbosity")]
     pub debug: u8,
 
+    #[clap(long, value_enum, default_value_t = Mode::Huge, help="Size of TSAK VM")]
+    pub vm: Mode,
+
     #[clap(long, action = clap::ArgAction::Count, help="Check if TSAK is running with elevated privileges")]
     pub privilege: u8,
 
@@ -114,6 +118,9 @@ pub struct Cli {
     #[clap(long, action = clap::ArgAction::Count, help="Pre-load languages for linguistic::* functions")]
     pub lang_preload: u8,
 
+    #[clap(long, default_value_t=20011, help="Port for sending service discovery broadcasts")]
+    discovery_port:  u16,
+
     #[clap(long, default_value_t=4, help="Number of pre-spawned processes for background execution")]
     proc:  u32,
 
@@ -128,6 +135,9 @@ pub struct Cli {
 
     #[clap(long, action = clap::ArgAction::Count, help="Enable TSAK bus")]
     bus_enable:  u8,
+
+    #[clap(long, action = clap::ArgAction::Count, help="Place TSAK into a sandbox mode")]
+    pub sandbox:  u8,
 
     #[clap(subcommand)]
     command: Commands,
@@ -144,6 +154,14 @@ enum Commands {
     Exec(Exec),
     Eval(Eval),
     Spawn(Spawn),
+}
+
+#[derive(Copy, Clone, ValueEnum)]
+pub enum Mode {
+    Small,
+    Medium,
+    Large,
+    Huge,
 }
 
 #[derive(Args, Clone, Debug)]

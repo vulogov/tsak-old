@@ -9,6 +9,8 @@ use crate::cmd::{Cli};
 use crate::stdlib::nr::nr_module::queue::{wait_for};
 
 pub mod scope;
+pub mod size;
+pub mod var;
 
 pub type RhaiResult<T> = std::result::Result<T, Box<EvalAltResult>>;
 
@@ -17,6 +19,7 @@ pub struct LangEngine<'a> {
     pub engine:    Engine,
     pub scope:     Scope<'a>,
     name:           String,
+    id:             String,
     pub is_debug:   bool,
     pub timer:      HighResolutionTimer,
     pub s:          Sender<String>,
@@ -31,6 +34,7 @@ impl LangEngine<'_> {
             scope:      Scope::new(),
             timer:      HighResolutionTimer::new(),
             name:       "".to_string(),
+            id:         stdlib::uuid::uuid_module::uuid_v4(),
             is_debug:   false,
             s: s,
             r: r,
@@ -38,9 +42,10 @@ impl LangEngine<'_> {
     }
     pub fn init(c: &Cli) -> LangEngine<'static> {
         let mut e = LangEngine::new();
+        e.create_var_syntax();
+        log::debug!("Init for engine: {}", &e.id);
         e.name = c.name.clone();
         if c.debug > 0 {
-            log::debug!("Debug is enabled");
             e.is_debug = true;
         }
         e.engine.register_global_module(RandomPackage::new().as_shared_module());
@@ -48,15 +53,17 @@ impl LangEngine<'_> {
         e.set_default_scope();
         e.set_channels_to_scope();
         e.set_cli_scope(&c);
+        e.set_vm_size(&c);
         stdlib::initlib(&mut e, c);
         e.elapsed("Init finished");
         e
     }
     pub fn init_with_channels(c: &Cli, s: Sender<String>, r: Receiver<String>) -> LangEngine<'static> {
         let mut e = LangEngine::new();
+        e.create_var_syntax();
+        log::debug!("Init for engine: {}", &e.id);
         e.name = c.name.clone();
         if c.debug > 0 {
-            log::debug!("Debug is enabled");
             e.is_debug = true;
         }
         e.s = s.clone();
@@ -66,12 +73,16 @@ impl LangEngine<'_> {
         e.set_default_scope();
         e.set_channels_to_scope();
         e.set_cli_scope(&c);
+        e.set_vm_size(&c);
         stdlib::initlib(&mut e, c);
         e.elapsed("Init finished");
         e
     }
     pub fn elapsed(&mut self, m: &str) {
-        log::debug!("{} takes: {:?} to execute", m, self.timer.elapsed());
+        log::debug!("[{}] {} takes: {:?} to execute", self.id, m, self.timer.elapsed());
+    }
+    pub fn id(&mut self) -> String {
+        self.id.clone()
     }
 }
 

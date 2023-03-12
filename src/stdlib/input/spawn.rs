@@ -48,3 +48,7 @@ pub fn expect_input(_context: NativeCallContext, cmd: String, exp: Array) -> Res
     }
     Result::Ok(Dynamic::from(res))
 }
+
+pub fn disabled_expect_input(_context: NativeCallContext, _cmd: String, _exp: Array) -> Result<Dynamic, Box<EvalAltResult>> {
+    Err("TSAK is in sandbox mode. input::expect() is disabled".into())
+}

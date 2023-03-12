@@ -28,6 +28,7 @@ pub mod sampler;
 pub mod linguistic;
 pub mod data;
 pub mod bus;
+pub mod parser;
 
 
 #[macro_export]
@@ -40,8 +41,8 @@ macro_rules! err {
 	)
 }
 
-pub fn initlib(engine: &mut LangEngine, _c: &Cli) {
-    log::trace!("Running STDLIB init");
+pub fn initlib(engine: &mut LangEngine, c: &Cli) {
+    log::trace!("Running STDLIB init: [{}]", &engine.id());
     uuid::init(&mut engine.engine);
     env::init(&mut engine.engine);
     string::init(&mut engine.engine);
@@ -50,7 +51,7 @@ pub fn initlib(engine: &mut LangEngine, _c: &Cli) {
     nr::init(&mut engine.engine, &mut engine.scope);
     system::init(engine);
     tsak_log::init(&mut engine.engine);
-    input::init(&mut engine.engine);
+    input::init(&mut engine.engine, c.clone());
     json::init(&mut engine.engine);
     grok::init(&mut engine.engine);
 	problem::init(&mut engine.engine);
@@ -66,4 +67,5 @@ pub fn initlib(engine: &mut LangEngine, _c: &Cli) {
 	linguistic::init(&mut engine.engine);
 	data::init(&mut engine.engine);
 	bus::init(&mut engine.engine);
+	parser::init(&mut engine.engine);
 }

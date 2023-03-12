@@ -16,6 +16,8 @@ pub mod system_metrics;
 
 mod run;
 mod system_loop;
+pub mod globals;
+pub mod dmesg;
 
 #[export_module]
 pub mod system_module {
@@ -143,6 +145,14 @@ pub fn init(engine: &mut LangEngine) {
           .register_fn("try_recv", NRBus::try_recv)
           .register_fn("to_string", |x: &mut NRBus| format!("Message bus len={}", x.s.len()) );
 
+    engine.engine.register_type::<globals::NRGlobals>()
+          .register_fn("Globals", globals::NRGlobals::new)
+          .register_fn("get", globals::NRGlobals::get_global)
+          .register_indexer_get(globals::NRGlobals::get_global)
+          .register_fn("set", globals::NRGlobals::set_global)
+          .register_indexer_set(globals::NRGlobals::set_global)
+          .register_fn("to_string", |x: &mut globals::NRGlobals| format!("{:?}", x) );
+
     let mut internal_module = Module::new();
     internal_module.set_id("internal");
     internal_module.set_native_fn("run", run::str_run);
@@ -153,6 +163,7 @@ pub fn init(engine: &mut LangEngine) {
     default_bus.r = engine.r.clone();
     internal_module.set_var("bus", default_bus);
     let mut module = exported_module!(system_module);
+    module.set_var("globals", globals::NRGlobals::new());
     module.set_native_fn("eventloop", system_loop::system_loop);
     engine.engine.register_static_module("system", module.into());
     engine.engine.register_static_module("internal", internal_module.into());

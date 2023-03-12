@@ -2,7 +2,8 @@ extern crate log;
 use rhai::{Engine, Map};
 use rhai::plugin::*;
 use fsio::{file};
-use crate::tsak_lib::io::get_file;
+use crate::tsak_lib::io::{get_file};
+use crate::cmd;
 
 pub mod command;
 pub mod watch;
@@ -14,6 +15,8 @@ pub mod textfile;
 pub mod binfile;
 pub mod distributions;
 pub mod spawn;
+pub mod docker;
+pub mod socket;
 
 
 #[export_module]
@@ -33,9 +36,6 @@ pub mod input_module {
             }
         }
     }
-    pub fn command(c: &str, a: String) -> String {
-        command::os_command(c, &a)
-    }
     pub fn snmp(addr: String, oid: String, community: String) -> Dynamic {
         snmp::snmp_get(&addr, &oid, &community)
     }
@@ -45,17 +45,27 @@ pub mod input_module {
     pub fn zabbix(addr: String, key: String) -> String {
         zabbix::zabbix_get(addr, key)
     }
-    pub fn ssh(addr: String, cmd: String) -> String {
-        ssh::ssh_command(addr, cmd)
-    }
 }
 
-pub fn init(engine: &mut Engine) {
+pub fn init(engine: &mut Engine, c: cmd::Cli) {
     log::trace!("Running STDLIB::input init");
 
     let mut module = exported_module!(input_module);
     module.set_native_fn("watch", watch::file_watch);
-    module.set_native_fn("expect", spawn::expect_input);
+    module.set_native_fn("docker", docker::docker_stat);
+    module.set_native_fn("socket", socket::get_from_socket);
+    if c.sandbox == 0 {
+        module.set_native_fn("expect", spawn::expect_input);
+        module.set_native_fn("command", command::os_command);
+        module.set_native_fn("ssh", ssh::ssh_command);
+    } else {
+        log::warn!("TSAK is in sandbox mode. input::expect() will be disabled");
+        module.set_native_fn("expect", spawn::disabled_expect_input);
+        log::warn!("TSAK is in sandbox mode. input::command() will be disabled");
+        module.set_native_fn("command", command::disabled_os_command);
+        log::warn!("TSAK is in sandbox mode. input::ssh() will be disabled");
+        module.set_native_fn("ssh", ssh::disabled_ssh_command);
+    }
 
     let mut textfile_module = Module::new();
     textfile_module.set_native_fn("forward", textfile::textfile_forward);

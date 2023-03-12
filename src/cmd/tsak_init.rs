@@ -9,6 +9,8 @@ use crate::stdlib::bus::pipe::pipes_init;
 use crate::stdlib::system::system_metrics::update_sysinfo;
 use crate::cmd::tsak_queue_processors;
 use crate::cmd::tsak_bus_update_processors;
+use crate::cmd::tsak_bus_discovery;
+
 
 
 pub fn tsak_init(c: cmd::Cli) {
@@ -58,9 +60,19 @@ pub fn tsak_init(c: cmd::Cli) {
         tokio::spawn(async move {
             tsak_bus_update_processors::bus_update_server_processor_main(spawn_c).await;
         });
+        log::debug!("cmd::tsak_init(): bus_discovery_main thread");
+        let spawn_c = c.clone();
+        tokio::spawn(async move {
+            tsak_bus_discovery::bus_discovery_main(spawn_c).await;
+        });
     } else {
         log::debug!("TSAK bus disabled for this instance");
     }
+    log::debug!("cmd::tsak_init(): bus_discovery_client_main thread");
+    let spawn_c = c.clone();
+    tokio::spawn(async move {
+        tsak_bus_discovery::bus_discovery_client_main(spawn_c).await;
+    });
     if c.bus_connect.len() > 0 {
         for s in c.bus_connect.split(",") {
             let srv = manipulate::trim(&manipulate::expand_tabs(&s.to_string(), 1), "");
