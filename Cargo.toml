@@ -82,6 +82,7 @@ rmesg = "1.0.20"
 color-backtrace = "0.5.1"
 sysctl = "0.5.4"
 privdrop = "0.5.3"
+is-url = "1.0.4"
 
 
 [dependencies.rhai]
