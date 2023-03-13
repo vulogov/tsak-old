@@ -4,7 +4,7 @@ use std::{thread, time};
 use rhai::{Dynamic, Module, EvalAltResult};
 use rhai::plugin::*;
 use crossbeam_channel::{unbounded, Sender, Receiver};
-
+use proctitle::set_title;
 use rhai::serde::{to_dynamic};
 use serde_json::{to_string, from_str};
 
@@ -43,6 +43,9 @@ pub mod system_module {
             sudo::RunningAs::User => "user".to_string(),
             sudo::RunningAs::Suid => "suid".to_string(),
         }
+    }
+    pub fn title(t: String) {
+        set_title(t);
     }
 }
 

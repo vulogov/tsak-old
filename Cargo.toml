@@ -83,6 +83,9 @@ color-backtrace = "0.5.1"
 sysctl = "0.5.4"
 privdrop = "0.5.3"
 is-url = "1.0.4"
+duct_sh = "0.13.6"
+proctitle = "0.1.1"
+bindet = "0.3.2"
 
 
 [dependencies.rhai]
