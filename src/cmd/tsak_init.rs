@@ -1,5 +1,6 @@
 extern crate log;
 use howlong;
+use color_backtrace;
 use crate::cmd;
 
 use voca_rs::*;
@@ -15,6 +16,8 @@ use crate::cmd::tsak_bus_discovery;
 
 pub fn tsak_init(c: cmd::Cli) {
     log::debug!("cmd::tsak_init() reached");
+    log::debug!("setting up backtrace handler");
+    color_backtrace::install();
     if c.lang_preload > 0 {
         let t = howlong::HighResolutionTimer::new();
         log::info!("Requesting languages pre-load for linguistic::* functions");

@@ -1,6 +1,7 @@
 extern crate log;
 use crate::cmd;
 use std;
+use privdrop;
 use sudo;
 
 pub fn check_privilege(c: cmd::Cli) {
@@ -20,6 +21,19 @@ pub fn check_privilege(c: cmd::Cli) {
         }
         sudo::RunningAs::Suid => {
             log::info!("You are running TSAK with SUID bit set");
+        }
+    }
+
+    if c.drop_privileges > 0 {
+        log::warn!("Drop privileges has been requested");
+        match privdrop::PrivDrop::default().chroot(c.drop_jail).user(c.drop_user).apply() {
+            Ok(res) => {
+                log::info!("Privilege drop been succesful: {:?}", res);
+            }
+            Err(err) => {
+                log::error!("Privilege drop had failed: {}", err);
+                std::process::exit(10)
+            }
         }
     }
 }

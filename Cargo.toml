@@ -1,6 +1,6 @@
 [package]
 name = "tsak"
-version = "1.0.5"
+version = "1.0.6"
 edition = "2021"
 
 [dependencies]
@@ -79,6 +79,9 @@ html_parser = "0.6.*"
 decorum = "0.3.1"
 markov-chain = "0.1.1"
 rmesg = "1.0.20"
+color-backtrace = "0.5.1"
+sysctl = "0.5.4"
+privdrop = "0.5.3"
 
 
 [dependencies.rhai]

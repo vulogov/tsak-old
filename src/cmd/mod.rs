@@ -139,6 +139,15 @@ pub struct Cli {
     #[clap(long, action = clap::ArgAction::Count, help="Place TSAK into a sandbox mode")]
     pub sandbox:  u8,
 
+    #[clap(help="OS user for privilege drop", long, default_value_t = String::from("nobody"))]
+    pub drop_user: String,
+
+    #[clap(help="Jail path for privilege drop", long, default_value_t = String::from("/var/empty"))]
+    pub drop_jail: String,
+
+    #[clap(long, action = clap::ArgAction::Count, help="Drop TSAK privileges")]
+    pub drop_privileges: u8,
+
     #[clap(subcommand)]
     command: Commands,
 }
