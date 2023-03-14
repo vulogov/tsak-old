@@ -11,6 +11,7 @@ use crate::stdlib::system::system_metrics::update_sysinfo;
 use crate::cmd::tsak_queue_processors;
 use crate::cmd::tsak_bus_update_processors;
 use crate::cmd::tsak_bus_discovery;
+use crate::cmd::tsak_logfiles_monitor;
 
 
 
@@ -83,6 +84,16 @@ pub fn tsak_init(c: cmd::Cli) {
             let spawn_c = c.clone();
             tokio::spawn(async move {
                 tsak_bus_update_processors::bus_update_client_processor_main(spawn_c, spawn_srv).await;
+            });
+        }
+    }
+    if c.monitor_logfile.len() > 0 {
+        log::debug!("Monitoring of logfiles was requested");
+        for f in &c.monitor_logfile {
+            let logfile = manipulate::trim(&manipulate::expand_tabs(&f.to_string(), 1), "");
+            let spawn_c = c.clone();
+            tokio::spawn(async move {
+                tsak_logfiles_monitor::logfile_monitor_main(spawn_c, logfile).await;
             });
         }
     }

@@ -2,7 +2,7 @@ extern crate log;
 use voca_rs::*;
 use rhai::{Engine, Dynamic, Array};
 use rhai::plugin::*;
-use regex::Regex;
+use fancy_regex::Regex;
 use crate::stdlib::grok;
 
 mod template;
@@ -64,7 +64,7 @@ impl Text {
             Ok(re) => {
                 for l in self.t.lines() {
                     let line = manipulate::trim(&manipulate::expand_tabs(&l.to_string(), 1), "");
-                    if re.is_match(&line) {
+                    if re.is_match(&line).unwrap() {
                         res.push(Dynamic::from(line));
                     }
                 }
@@ -123,7 +123,7 @@ pub fn init(engine: &mut Engine) {
     token_module.set_native_fn("tokenize", tokens::str_tokenize_text);
     token_module.set_native_fn("numbers_extract", num_extract::num_extract_text);
     token_module.set_native_fn("numbers_extract", num_extract::num_extract_str);
-    
+
     module.set_sub_module("tokenize", token_module);
 
     engine.register_static_module("str", module.into());

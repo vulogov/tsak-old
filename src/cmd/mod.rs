@@ -24,6 +24,7 @@ pub mod tsak_processors;
 pub mod tsak_queue_processors;
 pub mod tsak_bus_update_processors;
 pub mod tsak_bus_discovery;
+pub mod tsak_logfiles_monitor;
 
 
 pub fn init() {
@@ -123,6 +124,9 @@ pub struct Cli {
 
     #[clap(long, default_value_t=4, help="Number of pre-spawned processes for background execution")]
     proc:  u32,
+
+    #[clap(help="Log files to monitor", long)]
+    pub monitor_logfile: Vec<String>,
 
     #[clap(help="TSAK instance capability", long, default_value_t = String::from("tsak,bus,heartbeat,update"))]
     pub capability: String,
