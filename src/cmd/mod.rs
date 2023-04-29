@@ -24,6 +24,7 @@ pub mod tsak_processors;
 pub mod tsak_queue_processors;
 pub mod tsak_bus_update_processors;
 pub mod tsak_bus_discovery;
+pub mod tsak_logfiles_monitor;
 
 
 pub fn init() {
@@ -124,6 +125,9 @@ pub struct Cli {
     #[clap(long, default_value_t=4, help="Number of pre-spawned processes for background execution")]
     proc:  u32,
 
+    #[clap(help="Log files to monitor", long)]
+    pub monitor_logfile: Vec<String>,
+
     #[clap(help="TSAK instance capability", long, default_value_t = String::from("tsak,bus,heartbeat,update"))]
     pub capability: String,
 
@@ -138,6 +142,15 @@ pub struct Cli {
 
     #[clap(long, action = clap::ArgAction::Count, help="Place TSAK into a sandbox mode")]
     pub sandbox:  u8,
+
+    #[clap(help="OS user for privilege drop", long, default_value_t = String::from("nobody"))]
+    pub drop_user: String,
+
+    #[clap(help="Jail path for privilege drop", long, default_value_t = String::from("/var/empty"))]
+    pub drop_jail: String,
+
+    #[clap(long, action = clap::ArgAction::Count, help="Drop TSAK privileges")]
+    pub drop_privileges: u8,
 
     #[clap(subcommand)]
     command: Commands,

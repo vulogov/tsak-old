@@ -42,10 +42,12 @@ pub fn init(engine: &mut Engine) {
     internal_queue_module.set_native_fn("pull", queue::queue_pull);
     internal_queue_module.set_native_fn("is_empty", queue::queue_is_empty);
     internal_module.set_sub_module("queue", internal_queue_module);
-    // COnfiguring pipe module
+    // Configuring pipe module
     internal_pipe_module.set_native_fn("push", pipe::pipe_push);
     internal_pipe_module.set_native_fn("pull", pipe::pipe_pull);
+    internal_pipe_module.set_native_fn("pull_log", pipe::pipe_log_pull);
     internal_pipe_module.set_native_fn("is_empty", pipe::pipe_is_empty);
+    internal_pipe_module.set_native_fn("no_logs", pipe::pipe_have_no_logs);
     internal_module.set_sub_module("pipe", internal_pipe_module);
     // Configuring cluster module
     cluster_module.set_native_fn("push", bus_update::update_bus_push);

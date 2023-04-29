@@ -3,9 +3,8 @@ use lazy_static::lazy_static;
 use rhai::{Engine, Map, Array, Dynamic, Identifier};
 use rhai::plugin::*;
 use std::{thread, time};
-use std::ffi::OsString;
 // Later add NetworkExt, NetworksExt, ProcessExt,
-use sysinfo::{System, SystemExt, CpuExt, ComponentExt, DiskExt, ProcessExt};
+use sysinfo::{System, SystemExt, UserExt, CpuExt, ComponentExt, DiskExt, ProcessExt, NetworkExt};
 use crate::stdlib::nr::metric::metric_type;
 use crate::stdlib::system::system_module::sleep;
 use crate::stdlib::system::dmesg;
@@ -38,12 +37,144 @@ pub mod metrics_module {
         sys.refresh_all();
         thread::sleep(time::Duration::from_millis(100));
     }
+
+    pub mod system {
+        pub fn uptime() -> u64 {
+            METRIC_SYS.lock().unwrap().uptime() as u64
+        }
+        pub fn boottime() -> u64 {
+            METRIC_SYS.lock().unwrap().uptime() as u64
+        }
+        pub fn name() -> String {
+            METRIC_SYS.lock().unwrap().name().unwrap()
+        }
+        pub fn kernel_version() -> String {
+            METRIC_SYS.lock().unwrap().kernel_version().unwrap()
+        }
+        pub fn os_version() -> String {
+            METRIC_SYS.lock().unwrap().os_version().unwrap()
+        }
+        pub fn long_os_version() -> String {
+            METRIC_SYS.lock().unwrap().long_os_version().unwrap()
+        }
+        pub fn distribution() -> String {
+            METRIC_SYS.lock().unwrap().distribution_id()
+        }
+        pub fn hostname() -> String {
+            METRIC_SYS.lock().unwrap().host_name().unwrap()
+        }
+
+        pub fn lavg() -> Dynamic {
+            let mut res = Map::new();
+            thread::sleep(time::Duration::from_millis(100));
+            METRIC_SYS.lock().unwrap().refresh_all();
+
+            let lavg = METRIC_SYS.lock().unwrap().load_average();
+            res.insert("1".into(), Dynamic::from(lavg.one as f64));
+            res.insert("5".into(), Dynamic::from(lavg.five as f64));
+            res.insert("15".into(), Dynamic::from(lavg.fifteen as f64));
+            Dynamic::from(res)
+        }
+        pub fn users() -> Dynamic {
+            let mut res = Array::new();
+            thread::sleep(time::Duration::from_millis(100));
+            METRIC_SYS.lock().unwrap().refresh_all();
+            for u in METRIC_SYS.lock().unwrap().users() {
+                let name = Dynamic::from(u.name().to_string());
+                res.push(name);
+            }
+            Dynamic::from(res)
+        }
+
+    }
+
+    pub mod net {
+        pub fn recv() -> Map {
+            let mut res = Map::new();
+            thread::sleep(time::Duration::from_millis(100));
+            METRIC_SYS.lock().unwrap().refresh_networks();
+            for (i,n) in METRIC_SYS.lock().unwrap().networks() {
+                let key = Identifier::from(i);
+                res.insert(key, Dynamic::from(n.received() as u64));
+            }
+            res
+        }
+        pub fn transmitted() -> Map {
+            let mut res = Map::new();
+            thread::sleep(time::Duration::from_millis(100));
+            METRIC_SYS.lock().unwrap().refresh_networks();
+            for (i,n) in METRIC_SYS.lock().unwrap().networks() {
+                let key = Identifier::from(i);
+                res.insert(key, Dynamic::from(n.transmitted() as u64));
+            }
+            res
+        }
+        pub fn total() -> Dynamic {
+            let mut res = Map::new();
+            thread::sleep(time::Duration::from_millis(100));
+            METRIC_SYS.lock().unwrap().refresh_networks();
+            for (i, n) in METRIC_SYS.lock().unwrap().networks() {
+                let key = Identifier::from(i);
+                let mut val = Map::new();
+                val.insert("received".into(), Dynamic::from(n.total_received() as u64));
+                val.insert("transmitted".into(), Dynamic::from(n.total_transmitted() as u64));
+                res.insert(key, Dynamic::from(val.clone()));
+            }
+            Dynamic::from(res)
+        }
+        pub fn packets() -> Dynamic {
+            let mut res = Map::new();
+            thread::sleep(time::Duration::from_millis(100));
+            METRIC_SYS.lock().unwrap().refresh_networks();
+            for (i, n) in METRIC_SYS.lock().unwrap().networks() {
+                let key = Identifier::from(i);
+                let mut val = Map::new();
+                val.insert("total_received".into(), Dynamic::from(n.total_packets_received() as u64));
+                val.insert("total_transmitted".into(), Dynamic::from(n.total_packets_transmitted() as u64));
+                val.insert("received".into(), Dynamic::from(n.packets_received() as u64));
+                val.insert("transmitted".into(), Dynamic::from(n.packets_transmitted() as u64));
+                res.insert(key, Dynamic::from(val.clone()));
+            }
+            Dynamic::from(res)
+        }
+        pub fn errors() -> Dynamic {
+            let mut res = Map::new();
+            thread::sleep(time::Duration::from_millis(100));
+            METRIC_SYS.lock().unwrap().refresh_networks();
+            for (i, n) in METRIC_SYS.lock().unwrap().networks() {
+                let key = Identifier::from(i);
+                let mut val = Map::new();
+                val.insert("total_received".into(), Dynamic::from(n.total_errors_on_received() as u64));
+                val.insert("total_transmitted".into(), Dynamic::from(n.total_errors_on_transmitted() as u64));
+                val.insert("received".into(), Dynamic::from(n.errors_on_received() as u64));
+                val.insert("transmitted".into(), Dynamic::from(n.errors_on_transmitted() as u64));
+                res.insert(key, Dynamic::from(val.clone()));
+            }
+            Dynamic::from(res)
+        }
+    }
+
     pub mod memory {
         pub fn total_memory() -> i64 {
             METRIC_SYS.lock().unwrap().total_memory() as i64
         }
         pub fn used_memory() -> i64 {
             METRIC_SYS.lock().unwrap().used_memory() as i64
+        }
+        pub fn available_memory() -> i64 {
+            METRIC_SYS.lock().unwrap().available_memory() as i64
+        }
+        pub fn free_memory() -> i64 {
+            METRIC_SYS.lock().unwrap().free_memory() as i64
+        }
+        pub fn total_swap() -> i64 {
+            METRIC_SYS.lock().unwrap().total_swap() as i64
+        }
+        pub fn used_swap() -> i64 {
+            METRIC_SYS.lock().unwrap().used_swap() as i64
+        }
+        pub fn free_swap() -> i64 {
+            METRIC_SYS.lock().unwrap().free_swap() as i64
         }
 
         pub mod m {

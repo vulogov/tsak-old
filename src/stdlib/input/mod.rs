@@ -17,15 +17,14 @@ pub mod distributions;
 pub mod spawn;
 pub mod docker;
 pub mod socket;
+pub mod url;
+pub mod bash;
 
 
 #[export_module]
 pub mod input_module {
     pub fn stdin() -> String {
         get_file::get_file("-".to_string())
-    }
-    pub fn url(u: &str) -> String {
-        get_file::get_file(u.to_string())
     }
     pub fn file(u: &str) -> String {
         match file::read_text_file(u) {
@@ -54,10 +53,12 @@ pub fn init(engine: &mut Engine, c: cmd::Cli) {
     module.set_native_fn("watch", watch::file_watch);
     module.set_native_fn("docker", docker::docker_stat);
     module.set_native_fn("socket", socket::get_from_socket);
+    module.set_native_fn("url", url::get_from_url);
     if c.sandbox == 0 {
         module.set_native_fn("expect", spawn::expect_input);
         module.set_native_fn("command", command::os_command);
         module.set_native_fn("ssh", ssh::ssh_command);
+        module.set_native_fn("bash", bash::run_bash);
     } else {
         log::warn!("TSAK is in sandbox mode. input::expect() will be disabled");
         module.set_native_fn("expect", spawn::disabled_expect_input);
@@ -65,6 +66,8 @@ pub fn init(engine: &mut Engine, c: cmd::Cli) {
         module.set_native_fn("command", command::disabled_os_command);
         log::warn!("TSAK is in sandbox mode. input::ssh() will be disabled");
         module.set_native_fn("ssh", ssh::disabled_ssh_command);
+        log::warn!("TSAK is in sandbox mode. input::bash() will be disabled");
+        module.set_native_fn("bash", bash::disabled_run_bash);
     }
 
     let mut textfile_module = Module::new();

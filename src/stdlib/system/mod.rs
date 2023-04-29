@@ -4,7 +4,7 @@ use std::{thread, time};
 use rhai::{Dynamic, Module, EvalAltResult};
 use rhai::plugin::*;
 use crossbeam_channel::{unbounded, Sender, Receiver};
-
+use proctitle::set_title;
 use rhai::serde::{to_dynamic};
 use serde_json::{to_string, from_str};
 
@@ -18,6 +18,7 @@ mod run;
 mod system_loop;
 pub mod globals;
 pub mod dmesg;
+pub mod sysctl;
 
 #[export_module]
 pub mod system_module {
@@ -42,6 +43,9 @@ pub mod system_module {
             sudo::RunningAs::User => "user".to_string(),
             sudo::RunningAs::Suid => "suid".to_string(),
         }
+    }
+    pub fn title(t: String) {
+        set_title(t);
     }
 }
 
@@ -165,6 +169,7 @@ pub fn init(engine: &mut LangEngine) {
     let mut module = exported_module!(system_module);
     module.set_var("globals", globals::NRGlobals::new());
     module.set_native_fn("eventloop", system_loop::system_loop);
+    module.set_native_fn("sysctl", sysctl::sysctl_get);
     engine.engine.register_static_module("system", module.into());
     engine.engine.register_static_module("internal", internal_module.into());
     system_metrics::init(&mut engine.engine);
