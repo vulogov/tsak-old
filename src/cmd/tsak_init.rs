@@ -53,11 +53,15 @@ pub fn tsak_init(c: cmd::Cli) {
     tokio::spawn(async move {
         tsak_queue_processors::vulnerability_processor_main(spawn_c).await;
     });
-    log::debug!("cmd::tsak_init(): zabbix_out_processor_main thread");
-    let spawn_c = c.clone();
-    tokio::spawn(async move {
-        tsak_queue_processors::zabbix_out_processor_main(spawn_c).await;
-    });
+    if c.zabbix_client_enable > 0 {
+        log::debug!("cmd::tsak_init(): zabbix_out_processor_main thread");
+        let spawn_c = c.clone();
+        tokio::spawn(async move {
+            tsak_queue_processors::zabbix_out_processor_main(spawn_c).await;
+        });
+    } else {
+        log::debug!("cmd::tsak_init(): zabbix client disabled");
+    }
     if c.bus_enable > 0 {
         log::info!("TSAK bus enabled for this instance");
         let spawn_c = c.clone();

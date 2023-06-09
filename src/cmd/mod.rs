@@ -83,19 +83,22 @@ pub struct Cli {
     #[clap(long, action = clap::ArgAction::Count, help="Check if TSAK is running with elevated privileges")]
     pub privilege: u8,
 
-    #[clap(long, default_value_t = String::from("insights-collector.newrelic.com"), help="Hostname for Event API")]
+    #[clap(long, action = clap::ArgAction::Count, help="Check for New Relic environment")]
+    pub nr_check: u8,
+
+    #[clap(long, default_value_t = String::from("insights-collector.newrelic.com"), help="Hostname for New Relic Event API")]
     pub nr_event: String,
 
-    #[clap(long, default_value_t = String::from("metric-api.newrelic.com"), help="Hostname for Metric API")]
+    #[clap(long, default_value_t = String::from("metric-api.newrelic.com"), help="Hostname for New Relic Metric API")]
     pub nr_metric: String,
 
-    #[clap(long, default_value_t = String::from("log-api.newrelic.com"), help="Hostname for Log API")]
+    #[clap(long, default_value_t = String::from("log-api.newrelic.com"), help="Hostname for New Relic Log API")]
     pub nr_log: String,
 
-    #[clap(long, default_value_t = String::from("trace-api.newrelic.com"), help="Hostname for Trace API")]
+    #[clap(long, default_value_t = String::from("trace-api.newrelic.com"), help="Hostname for New Relic Trace API")]
     pub nr_trace: String,
 
-    #[clap(long, default_value_t = String::from("api.newrelic.com"), help="Hostname for New Relic API")]
+    #[clap(long, default_value_t = String::from("api.newrelic.com"), help="Hostname for New Relic New Relic API")]
     pub nr_api: String,
 
     #[clap(long, default_value_t = String::from("security-api.newrelic.com"), help="Hostname for New Relic Security API")]
@@ -139,6 +142,9 @@ pub struct Cli {
 
     #[clap(long, action = clap::ArgAction::Count, help="Enable TSAK bus")]
     bus_enable:  u8,
+
+    #[clap(long, action = clap::ArgAction::Count, help="Enable Zabbix client sender")]
+    zabbix_client_enable:  u8,
 
     #[clap(long, action = clap::ArgAction::Count, help="Place TSAK into a sandbox mode")]
     pub sandbox:  u8,
