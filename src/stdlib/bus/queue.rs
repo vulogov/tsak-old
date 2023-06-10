@@ -14,6 +14,11 @@ pub fn queue_init() {
     q.insert("vulnerabilities".to_string(), Worker::new_fifo());
     q.insert("bus_publish".to_string(), Worker::new_fifo());
     q.insert("bus_receive".to_string(), Worker::new_fifo());
+    q.insert("zabbix_client".to_string(), Worker::new_fifo());
+    q.insert("otel_events".to_string(), Worker::new_fifo());
+    q.insert("otel_metrics".to_string(), Worker::new_fifo());
+    q.insert("otel_logs".to_string(), Worker::new_fifo());
+    q.insert("otel_traces".to_string(), Worker::new_fifo());
     drop(q);
 }
 

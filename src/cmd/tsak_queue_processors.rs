@@ -82,7 +82,54 @@ pub async fn zabbix_out_processor_main(_c: cmd::Cli) -> () {
     log::trace!("zabbix out processor reached");
 
     loop {
+        sleep_millisecond(1000 as i64);
+        let data = queue_read_payloads("zabbix_client".to_string(), 50);
+        if data.len() > 0 {
+            match to_string(&data) {
+               Ok(payload) => {
+                   log::debug!("Sending {} zabbix_client entries, {} bytes to New Relic", &data.len(), &payload.len());
+               }
+               Err(err) => {
+                   log::error!("Error generating payload: {}", err);
+               }
+           }
+        }
+    }
+}
+
+pub async fn otel_events_out_processor_main(_c: cmd::Cli) -> () {
+    log::trace!("otel events out processor reached");
+
+    loop {
         sleep(1 as i64)
 
     }
 }
+
+pub async fn otel_metrics_out_processor_main(_c: cmd::Cli) -> () {
+    log::trace!("otel metrics out processor reached");
+
+    loop {
+        sleep(1 as i64)
+
+    }
+}
+
+pub async fn otel_logs_out_processor_main(_c: cmd::Cli) -> () {
+    log::trace!("otel logs out processor reached");
+
+    loop {
+        sleep(1 as i64)
+
+    }
+}
+
+pub async fn otel_traces_out_processor_main(_c: cmd::Cli) -> () {
+    log::trace!("otel traces out processor reached");
+
+    loop {
+        sleep(1 as i64)
+
+    }
+}
+

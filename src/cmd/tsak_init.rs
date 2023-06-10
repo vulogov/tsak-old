@@ -23,7 +23,7 @@ pub fn tsak_init(c: cmd::Cli) {
         let t = howlong::HighResolutionTimer::new();
         log::info!("Requesting languages pre-load for linguistic::* functions");
         languages_preload();
-        log::debug!("{:?} takes to run script", t.elapsed());
+        log::debug!("{:?} takes to load languages", t.elapsed());
     }
     queue_init();
     pipes_init();
@@ -33,26 +33,30 @@ pub fn tsak_init(c: cmd::Cli) {
     tokio::spawn(async move {
         update_sysinfo().await;
     });
-    log::debug!("cmd::tsak_init(): event_processor_main thread");
-    let spawn_c = c.clone();
-    tokio::spawn(async move {
-        tsak_queue_processors::event_processor_main(spawn_c).await;
-    });
-    log::debug!("cmd::tsak_init(): metric_processor_main thread");
-    let spawn_c = c.clone();
-    tokio::spawn(async move {
-        tsak_queue_processors::metric_processor_main(spawn_c).await;
-    });
-    log::debug!("cmd::tsak_init(): log_processor_main thread");
-    let spawn_c = c.clone();
-    tokio::spawn(async move {
-        tsak_queue_processors::log_processor_main(spawn_c).await;
-    });
-    log::debug!("cmd::tsak_init(): vulnerability_processor_main thread");
-    let spawn_c = c.clone();
-    tokio::spawn(async move {
-        tsak_queue_processors::vulnerability_processor_main(spawn_c).await;
-    });
+    if c.nr_client_enable > 0 {
+        log::debug!("cmd::tsak_init(): event_processor_main thread");
+        let spawn_c = c.clone();
+        tokio::spawn(async move {
+            tsak_queue_processors::event_processor_main(spawn_c).await;
+        });
+        log::debug!("cmd::tsak_init(): metric_processor_main thread");
+        let spawn_c = c.clone();
+        tokio::spawn(async move {
+            tsak_queue_processors::metric_processor_main(spawn_c).await;
+        });
+        log::debug!("cmd::tsak_init(): log_processor_main thread");
+        let spawn_c = c.clone();
+        tokio::spawn(async move {
+            tsak_queue_processors::log_processor_main(spawn_c).await;
+        });
+        log::debug!("cmd::tsak_init(): vulnerability_processor_main thread");
+        let spawn_c = c.clone();
+        tokio::spawn(async move {
+            tsak_queue_processors::vulnerability_processor_main(spawn_c).await;
+        });
+    } else {
+        log::debug!("cmd::tsak_init(): newrelic client disabled");
+    }
     if c.zabbix_client_enable > 0 {
         log::debug!("cmd::tsak_init(): zabbix_out_processor_main thread");
         let spawn_c = c.clone();
@@ -61,6 +65,27 @@ pub fn tsak_init(c: cmd::Cli) {
         });
     } else {
         log::debug!("cmd::tsak_init(): zabbix client disabled");
+    }
+    if c.otel_client_enable > 0 {
+        log::debug!("cmd::tsak_init(): otel_out_processor_main thread");
+        let spawn_c = c.clone();
+        tokio::spawn(async move {
+            tsak_queue_processors::otel_events_out_processor_main(spawn_c).await;
+        });
+        let spawn_c = c.clone();
+        tokio::spawn(async move {
+            tsak_queue_processors::otel_metrics_out_processor_main(spawn_c).await;
+        });
+        let spawn_c = c.clone();
+        tokio::spawn(async move {
+            tsak_queue_processors::otel_logs_out_processor_main(spawn_c).await;
+        });
+        let spawn_c = c.clone();
+        tokio::spawn(async move {
+            tsak_queue_processors::otel_traces_out_processor_main(spawn_c).await;
+        });
+    } else {
+        log::debug!("cmd::tsak_init(): otel client disabled");
     }
     if c.bus_enable > 0 {
         log::info!("TSAK bus enabled for this instance");

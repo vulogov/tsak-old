@@ -29,6 +29,7 @@ pub mod linguistic;
 pub mod data;
 pub mod bus;
 pub mod parser;
+pub mod zabbix;
 
 
 #[macro_export]
@@ -68,4 +69,5 @@ pub fn initlib(engine: &mut LangEngine, c: &Cli) {
 	data::init(&mut engine.engine);
 	bus::init(&mut engine.engine);
 	parser::init(&mut engine.engine);
+	zabbix::init(&mut engine.engine);
 }

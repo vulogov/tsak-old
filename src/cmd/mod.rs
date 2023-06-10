@@ -143,8 +143,14 @@ pub struct Cli {
     #[clap(long, action = clap::ArgAction::Count, help="Enable TSAK bus")]
     bus_enable:  u8,
 
+    #[clap(long, action = clap::ArgAction::Count, help="Enable New Relic client sender")]
+    nr_client_enable:  u8,
+
     #[clap(long, action = clap::ArgAction::Count, help="Enable Zabbix client sender")]
     zabbix_client_enable:  u8,
+
+    #[clap(long, action = clap::ArgAction::Count, help="Enable OTel client sender")]
+    otel_client_enable:  u8,
 
     #[clap(long, action = clap::ArgAction::Count, help="Place TSAK into a sandbox mode")]
     pub sandbox:  u8,
